@@ -4,6 +4,7 @@ import { API_URL } from "./Globals";
 import MainCategories from "./Components/MainCategories";
 import { Route, Routes } from "react-router";
 import { BrowserRouter as Router, Link, NavLink } from "react-router-dom";
+import NavigationBar from "./Components/NavigationBar";
 
 const fetchData = async (link: string) => {
 	try {
@@ -38,26 +39,21 @@ function App() {
 
 	return (
 		<Router>
-			<nav>
-				<ul>
-					<NavLink to="/Wiki">Wikia</NavLink>
-					<NavLink to="/Characters">Characters</NavLink>
-					<NavLink to="/DiceSimulator">Dice simulator</NavLink>
-				</ul>
-			</nav>
+			<NavigationBar />
 			<div className="App">
 				<Routes>
 					<Route
-						path={`/Wiki`}
+						path={`Wiki`}
 						element={
 							<MainCategories
 								categories={categories}
 								onCategoryPick={handleSetMainCategory}
 							/>
 						}
-					/>
-					<Route path={"/Characters"} />
-					<Route path={"/DiceSimulator"} />
+					></Route>
+
+					<Route path={"Characters"}></Route>
+					<Route path={"DiceSimulator"}></Route>
 				</Routes>
 			</div>
 		</Router>

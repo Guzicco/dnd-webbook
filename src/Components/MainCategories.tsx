@@ -23,9 +23,9 @@ const MainCategories = ({
 					return (
 						<NavLink
 							key={category}
-							to={{ pathname: `/category/${category}` }}
-							replace
+							to={{ pathname: `${category}` }}
 							onClick={() => handleClick(category)}
+							className={() => "active-link"}
 						>
 							<li className="list-group-item">{trimString(category)}</li>
 						</NavLink>
