@@ -15,9 +15,11 @@ import React from "react";
 import { Link as RouterLink } from "react-router-dom";
 import MenuIcon from "@mui/icons-material/Menu";
 
-const pages = ["Home", "Wiki", "Characters", "Dice Simulator"];
+interface Props {
+	pages: string[];
+}
 
-const NavigationBar = () => {
+const NavigationBar: React.FC<Props> = ({ pages }) => {
 	const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(
 		null
 	);
