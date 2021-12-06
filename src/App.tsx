@@ -1,17 +1,12 @@
-import React, { useState } from "react";
-import MainCategories from "./Components/MainCategories";
+import React from "react";
 import { Route, Routes } from "react-router";
 import { BrowserRouter as Router } from "react-router-dom";
 import NavigationBar from "./Components/NavigationBar";
+import Wiki from "./Components/Wiki";
+import { WikiProvider } from "./Components/WikiContext";
 
 function App() {
-	const [wikiCategoryPicked, setWikiCategoryPicked] = useState<string>("");
-
 	const pages = ["Home", "Wiki", "Characters", "Dice Simulator"];
-
-	const handleWikiCategoryPick: (category: string) => void = (category) => {
-		setWikiCategoryPicked(category);
-	};
 
 	return (
 		<Router>
@@ -19,21 +14,22 @@ function App() {
 				<NavigationBar pages={pages} />
 			</div>
 			<main>
-				<Routes>
-					<Route
-						path={`Wiki`}
-						element={
-							<MainCategories onCategoryPicked={handleWikiCategoryPick} />
-						}
-					>
-						<Route
-							path={`${wikiCategoryPicked}`}
-							element={<div>hello there</div>}
-						/>
-					</Route>
-					<Route path={"Characters"}></Route>
-					<Route path={"DiceSimulator"}></Route>
-				</Routes>
+				<WikiProvider>
+					<Routes>
+						<Route path={`Wiki`} element={<Wiki />}>
+							<Route
+								// path={useContext}
+								path={`classes`}
+								// element={<SubCategoryDisplay}
+								element={<div>hello there</div>}
+							>
+								{/* Handle item Display */}
+							</Route>
+						</Route>
+						<Route path={"Characters"}></Route>
+						<Route path={"DiceSimulator"}></Route>
+					</Routes>
+				</WikiProvider>
 			</main>
 		</Router>
 	);
