@@ -2,48 +2,62 @@ import React, { createContext, useState, useContext, useEffect } from "react";
 import { API_URL } from "../Globals";
 import fetchData from "../Utils/FetchData";
 
-const WikiPathContext = createContext<IContext<string>>({
+const WikiActiveCategoryContext = createContext<IContext<string>>({
 	getter: "",
-	setter: () => {},
+	onChange: () => {},
 });
 const WikiMainCategoriesContext = createContext<string[]>([""]);
-const themeContext = createContext<IContext<[]>>({
-	getter: [],
-	setter: () => {},
-});
 
 interface IContext<T> {
 	getter: T;
-	setter: () => void;
+	onChange: (prop: any) => void;
 }
 
-export const useWikiPath = () => {
-	return useContext(WikiPathContext);
+interface ICategory<T> {
+	apiLink: T;
+	data: {};
+}
+
+export const useActiveCategory = () => {
+	return useContext(WikiActiveCategoryContext);
 };
 export const useWikiMainCategories = () => {
 	return useContext(WikiMainCategoriesContext);
 };
 
 export const WikiProvider = ({ children }: { children: React.ReactNode }) => {
-	const [wikiPath, setWikiPath] = useState<string>("");
-	const [mainCategories, setMainCategories] = useState<string[]>([""]);
+	const [wikiActiveCategory, setActiveCategory] = useState<ICategory<string>>({
+		apiLink: "",
+		data: {},
+	});
+	const [mainCategories, setMainCategories] = useState<ICategory<string[]>>({
+		apiLink: [""],
+		data: {},
+	});
 
-	const handleWikiPathChange: (path: string) => void = (path) => {
-		setWikiPath(path);
+	const handleActiveCategoryChange: (category: string) => void = async (
+		category
+	) => {
+		try {
+			const getData = await fetchData(`${API_URL}/${category}`);
+			setActiveCategory({ apiLink: category, data: getData });
+			console.log(getData);
+		} catch (err) {
+			console.log(err);
+		}
 	};
 
-	const wikiSetter = () => {};
-
 	const wikiPathProvider: IContext<string> = {
-		getter: wikiPath,
-		setter: wikiSetter,
+		getter: wikiActiveCategory.apiLink,
+		onChange: handleActiveCategoryChange,
 	};
 
 	const fetchCategories = async () => {
 		try {
 			const getCategories = await fetchData(API_URL);
+			console.log(getCategories);
 			const keys = Object.keys(getCategories);
-			setMainCategories([...keys]);
+			setMainCategories({ apiLink: [...keys], data: getCategories });
 		} catch (err) {
 			console.log(err);
 		}
@@ -53,10 +67,10 @@ export const WikiProvider = ({ children }: { children: React.ReactNode }) => {
 	}, []);
 
 	return (
-		<WikiMainCategoriesContext.Provider value={mainCategories}>
-			<WikiPathContext.Provider value={wikiPathProvider}>
+		<WikiMainCategoriesContext.Provider value={mainCategories.apiLink}>
+			<WikiActiveCategoryContext.Provider value={wikiPathProvider}>
 				{children}
-			</WikiPathContext.Provider>
+			</WikiActiveCategoryContext.Provider>
 		</WikiMainCategoriesContext.Provider>
 	);
 };

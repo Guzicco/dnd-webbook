@@ -7,7 +7,6 @@ import { WikiProvider } from "./Components/WikiContext";
 
 function App() {
 	const pages = ["Home", "Wiki", "Characters", "Dice Simulator"];
-
 	return (
 		<Router>
 			<div>
@@ -16,10 +15,9 @@ function App() {
 			<main>
 				<WikiProvider>
 					<Routes>
-						<Route path={`Wiki`} element={<Wiki />}>
+						<Route path={"Wiki"} element={<Wiki />}>
 							<Route
-								// path={useContext}
-								path={`classes`}
+								path={"classes"}
 								// element={<SubCategoryDisplay}
 								element={<div>hello there</div>}
 							>

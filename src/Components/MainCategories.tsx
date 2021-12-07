@@ -1,13 +1,7 @@
 import { List, ListItem } from "@mui/material";
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { NavLink } from "react-router-dom";
-import { API_URL } from "../Globals";
-import fetchData from "../Utils/FetchData";
-import { useWikiMainCategories } from "./WikiContext";
-
-// interface Props {
-// 	onCategoryPicked: (category: string) => void;
-// }
+import { useActiveCategory, useWikiMainCategories } from "./WikiContext";
 
 function trimString(tmp = "") {
 	return tmp.replace("-", " ").toUpperCase();
@@ -15,22 +9,19 @@ function trimString(tmp = "") {
 
 const MainCategories: React.FC = () => {
 	const categories = useWikiMainCategories();
-	// const handleClick: (category: string) => void = (category) => {
-	// 	onCategoryPicked(category);
-	// };
+	const categoryPick = useActiveCategory();
 
 	return (
 		<List sx={{ mr: 2, width: 200 }}>
 			{categories.map((category: string) => {
 				return (
-					<ListItem>
+					<ListItem key={category}>
 						<NavLink
-							key={category}
 							to={{ pathname: `${category}` }}
-							// onClick={() => handleClick(category)}
+							onClick={() => categoryPick.onChange(category)}
 							className={() => "active-link"}
 						>
-							<li className="list-group-item">{trimString(category)}</li>
+							{trimString(category)}
 						</NavLink>
 					</ListItem>
 				);
