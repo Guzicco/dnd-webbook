@@ -1,76 +1,110 @@
 import React, { createContext, useState, useContext, useEffect } from "react";
 import { API_URL } from "../Globals";
-import fetchData from "../Utils/FetchData";
+import Axios from "axios";
+import { ILink } from "./NavigationBar";
 
-const WikiActiveCategoryContext = createContext<IContext<string>>({
-	getter: "",
-	onChange: () => {},
-});
-const WikiMainCategoriesContext = createContext<string[]>([""]);
-
-interface IContext<T> {
-	getter: T;
-	onChange: (prop: any) => void;
+interface ICharacterTrait {
+  // strength
+  id: string;
+  title: string;
+  description: string;
+}
+interface ICharacterAbility {
+  // melee
+  id: string;
+  title: string;
+  description: string;
 }
 
-interface ICategory<T> {
-	apiLink: T;
-	data: {};
-}
+type IWikiConcreteEntry = ICharacterTrait | ICharacterAbility;
 
-export const useActiveCategory = () => {
-	return useContext(WikiActiveCategoryContext);
+type IState =
+  // TODO: add categories loaded state
+  // WARN: some categories might not have subcategories/items
+  | { type: "INITIAL" }
+  | { type: "LOADING" }
+  | {
+      type: "LOADED";
+      state: {
+        categoriesList: ILink[];
+      };
+    }
+  | {
+      type: "CATEGORY_PICKED";
+      state: {
+        categoriesList: ILink[];
+        categoryPicked: {
+          name: string;
+          subcategories: ILink[];
+        };
+      };
+    }
+  | {
+      type: "SUB_CATEGORY_PICKED";
+      state: {
+        categoriesList: ILink[];
+        categoryPicked: {
+          name: string;
+          subcategories: ILink[];
+        };
+        subCategoryPicked: {
+          name: string;
+          wikiEntries: ILink[];
+        };
+      };
+    }
+  | {
+      type: "ITEM_PICKED";
+      state: {
+        categoriesList: ILink[];
+        categoryPicked: {
+          name: string;
+          subcategories: ILink[];
+        };
+        subCategoryPicked: {
+          name: string;
+          wikiEntries: ILink[];
+        };
+        item: IWikiConcreteEntry;
+      };
+    };
+
+const WikiDataContext = createContext<IState>({ type: "INITIAL" });
+
+export const useWikiData = () => {
+  return useContext(WikiDataContext);
 };
-export const useWikiMainCategories = () => {
-	return useContext(WikiMainCategoriesContext);
-};
 
-export const WikiProvider = ({ children }: { children: React.ReactNode }) => {
-	const [wikiActiveCategory, setActiveCategory] = useState<ICategory<string>>({
-		apiLink: "",
-		data: {},
-	});
-	const [mainCategories, setMainCategories] = useState<ICategory<string[]>>({
-		apiLink: [""],
-		data: {},
-	});
+export const WikiDataProvider = ({
+  children,
+}: {
+  children: React.ReactNode;
+}) => {
+  const [wikiState, setWikiState] = useState<IState>({ type: "INITIAL" });
+  const fetchInitialData = async () => {
+    setWikiState({ type: "LOADING" });
+    try {
+      const initialData = await Axios.get(API_URL)
+        .then((resp) => resp.data)
+        .then((data) => Object.entries(data).map((entry) => entry));
+      const formattedData = initialData.map((entry) => {
+        return { label: entry[0], url: String(entry[1]) };
+      });
+      setWikiState({
+        type: "LOADED",
+        state: { categoriesList: formattedData },
+      });
+    } catch (err) {
+      console.log(err);
+    }
+  };
+  useEffect(() => {
+    fetchInitialData();
+  }, []);
 
-	const handleActiveCategoryChange: (category: string) => void = async (
-		category
-	) => {
-		try {
-			const getData = await fetchData(`${API_URL}/${category}`);
-			setActiveCategory({ apiLink: category, data: getData });
-			console.log(getData);
-		} catch (err) {
-			console.log(err);
-		}
-	};
-
-	const wikiPathProvider: IContext<string> = {
-		getter: wikiActiveCategory.apiLink,
-		onChange: handleActiveCategoryChange,
-	};
-
-	const fetchCategories = async () => {
-		try {
-			const getCategories = await fetchData(API_URL);
-			console.log(getCategories);
-			const keys = Object.keys(getCategories);
-			setMainCategories({ apiLink: [...keys], data: getCategories });
-		} catch (err) {
-			console.log(err);
-		}
-	};
-	useEffect(() => {
-		fetchCategories();
-	}, []);
-
-	return (
-		<WikiMainCategoriesContext.Provider value={mainCategories.apiLink}>
-			<WikiActiveCategoryContext.Provider value={wikiPathProvider}>
-				{children}
-			</WikiActiveCategoryContext.Provider>
-		</WikiMainCategoriesContext.Provider>
-	);
+  return (
+    <WikiDataContext.Provider value={wikiState}>
+      {children}
+    </WikiDataContext.Provider>
+  );
 };

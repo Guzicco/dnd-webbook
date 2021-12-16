@@ -1,36 +1,54 @@
 import React from "react";
 import { Route, Routes } from "react-router";
 import { BrowserRouter as Router } from "react-router-dom";
-import NavigationBar from "./Components/NavigationBar";
+import NavigationBar, { ILink } from "./Components/NavigationBar";
 import Wiki from "./Components/Wiki";
-import { WikiProvider } from "./Components/WikiContext";
+import { WikiDataProvider } from "./Components/WikiContext";
+
+export type IRouteName = "about" | "wiki" | "characters" | "diceSimulator";
+
+const routes: { [key in IRouteName]: ILink } = {
+  about: {
+    label: "About",
+    url: "about",
+  },
+  wiki: {
+    label: "Wiki",
+    url: "wiki",
+  },
+  characters: {
+    label: "Characters",
+    url: "characters",
+  },
+  diceSimulator: {
+    label: "Dice Simulator",
+    url: "diceSimulator",
+  },
+};
 
 function App() {
-	const pages = ["Home", "Wiki", "Characters", "Dice Simulator"];
-	return (
-		<Router>
-			<div>
-				<NavigationBar pages={pages} />
-			</div>
-			<main>
-				<WikiProvider>
-					<Routes>
-						<Route path={"Wiki"} element={<Wiki />}>
-							<Route
-								path={"classes"}
-								// element={<SubCategoryDisplay}
-								element={<div>hello there</div>}
-							>
-								{/* Handle item Display */}
-							</Route>
-						</Route>
-						<Route path={"Characters"}></Route>
-						<Route path={"DiceSimulator"}></Route>
-					</Routes>
-				</WikiProvider>
-			</main>
-		</Router>
-	);
+  return (
+    <Router>
+      <nav>
+        <NavigationBar routes={routes} />
+      </nav>
+      <main>
+        <Routes>
+          <Route path={routes.about.url} />
+          <Route
+            path={routes.wiki.url}
+            element={
+              <WikiDataProvider>
+                <Wiki />
+              </WikiDataProvider>
+            }
+          />
+          <Route path={routes.characters.url} />
+          <Route path={routes.diceSimulator.url} />
+        </Routes>
+      </main>
+    </Router>
+  );
 }
 
 export default App;
