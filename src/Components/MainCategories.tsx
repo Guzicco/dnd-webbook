@@ -3,14 +3,18 @@ import React from "react";
 import { NavLink } from "react-router-dom";
 import trimString from "../Utils/trimString";
 import { ILink } from "./NavigationBar";
+import { useWikiData, EWikiStates } from "./WikiContext";
 
-interface Props {
-  categories: ILink[];
-}
+interface Props {}
 
-const MainCategories: React.FC<Props> = ({ categories }) => {
-  console.log(categories);
-  console.log("hihi");
+const MainCategories: React.FC<Props> = () => {
+  const wikiData = useWikiData();
+  let categories: ILink[] = [];
+
+  if (wikiData.type === "LOADED") {
+    categories = wikiData.state.categoriesList;
+  }
+
   return (
     <List sx={{ mr: 2, width: 200 }}>
       {categories.map((category: ILink) => {

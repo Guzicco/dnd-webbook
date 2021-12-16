@@ -7,12 +7,11 @@ interface Props {}
 
 const Wiki: React.FC<Props> = () => {
   const wikiData = useWikiData();
+
   return (
     <Grid container>
       <Grid item>
-        {wikiData.type === "LOADED" ? (
-          <MainCategories categories={wikiData.state.categoriesList} />
-        ) : null}
+        <MainCategories />
       </Grid>
       <Grid item></Grid>
     </Grid>

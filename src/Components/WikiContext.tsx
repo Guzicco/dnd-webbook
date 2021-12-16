@@ -17,20 +17,26 @@ interface ICharacterAbility {
 }
 
 type IWikiConcreteEntry = ICharacterTrait | ICharacterAbility;
-
-type IState =
-  // TODO: add categories loaded state
+export enum EWikiStates {
+  "INITIAL",
+  "LOADING",
+  "LOADED",
+  "CATEGORY_PICKED",
+  "SUBCATEGORY_PICKED",
+  "ITEM_PICKED",
+}
+export type IState =
   // WARN: some categories might not have subcategories/items
-  | { type: "INITIAL" }
-  | { type: "LOADING" }
+  | { type: EWikiStates.INITIAL }
+  | { type: EWikiStates.LOADING }
   | {
-      type: "LOADED";
+      type: EWikiStates.LOADED;
       state: {
         categoriesList: ILink[];
       };
     }
   | {
-      type: "CATEGORY_PICKED";
+      type: EWikiStates.CATEGORY_PICKED;
       state: {
         categoriesList: ILink[];
         categoryPicked: {
@@ -40,7 +46,7 @@ type IState =
       };
     }
   | {
-      type: "SUB_CATEGORY_PICKED";
+      type: EWikiStates.SUBCATEGORY_PICKED;
       state: {
         categoriesList: ILink[];
         categoryPicked: {
@@ -54,7 +60,7 @@ type IState =
       };
     }
   | {
-      type: "ITEM_PICKED";
+      type: EWikiStates.ITEM_PICKED;
       state: {
         categoriesList: ILink[];
         categoryPicked: {
@@ -69,7 +75,7 @@ type IState =
       };
     };
 
-const WikiDataContext = createContext<IState>({ type: "INITIAL" });
+const WikiDataContext = createContext<IState>({ type: EWikiStates.INITIAL });
 
 export const useWikiData = () => {
   return useContext(WikiDataContext);
@@ -80,9 +86,11 @@ export const WikiDataProvider = ({
 }: {
   children: React.ReactNode;
 }) => {
-  const [wikiState, setWikiState] = useState<IState>({ type: "INITIAL" });
+  const [wikiState, setWikiState] = useState<IState>({
+    type: EWikiStates.INITIAL,
+  });
   const fetchInitialData = async () => {
-    setWikiState({ type: "LOADING" });
+    setWikiState({ type: EWikiStates.LOADING });
     try {
       const initialData = await Axios.get(API_URL)
         .then((resp) => resp.data)
@@ -91,7 +99,7 @@ export const WikiDataProvider = ({
         return { label: entry[0], url: String(entry[1]) };
       });
       setWikiState({
-        type: "LOADED",
+        type: EWikiStates.LOADED,
         state: { categoriesList: formattedData },
       });
     } catch (err) {
