@@ -1,17 +1,17 @@
-import { List, ListItem } from "@mui/material";
+import { Button, List, ListItem } from "@mui/material";
 import React from "react";
-import { NavLink } from "react-router-dom";
 import trimString from "../Utils/trimString";
 import { ILink } from "./NavigationBar";
-import { useWikiData, EWikiStates } from "./WikiContext";
+import { useWikiData, EWikiStates, useWikiDataHandler } from "./WikiContext";
 
 interface Props {}
 
 const MainCategories: React.FC<Props> = () => {
   const wikiData = useWikiData();
+  const wikiDataHanlder = useWikiDataHandler();
   let categories: ILink[] = [];
 
-  if (wikiData.type === "LOADED") {
+  if (wikiData.type === EWikiStates.LOADED) {
     categories = wikiData.state.categoriesList;
   }
 
@@ -20,13 +20,17 @@ const MainCategories: React.FC<Props> = () => {
       {categories.map((category: ILink) => {
         return (
           <ListItem key={category.label}>
-            <NavLink
-              to={{ pathname: `${category.label}` }}
-              // onClick={() => handleActiveCategoryChange(category)}
-              className={() => "active-link"}
+            <Button
+              data-url={category.url}
+              fullWidth
+              variant="contained"
+              disableElevation={true}
+              onClick={(event: any) => {
+                wikiDataHanlder.onCategoryPick(event.target.dataset.url);
+              }}
             >
               {trimString(category.label)}
-            </NavLink>
+            </Button>
           </ListItem>
         );
       })}

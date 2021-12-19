@@ -15,8 +15,9 @@ interface ICharacterAbility {
   title: string;
   description: string;
 }
-
 type IWikiConcreteEntry = ICharacterTrait | ICharacterAbility;
+
+// Context/Data structure
 export enum EWikiStates {
   "INITIAL",
   "LOADING",
@@ -74,13 +75,23 @@ export type IState =
         item: IWikiConcreteEntry;
       };
     };
-
 const WikiDataContext = createContext<IState>({ type: EWikiStates.INITIAL });
-
 export const useWikiData = () => {
   return useContext(WikiDataContext);
 };
 
+// Context/Data Handling logic
+export type IHandler = {
+  onCategoryPick: (pickedURL: string) => void;
+};
+const WikiDataContextHandler = createContext<IHandler>({
+  onCategoryPick: (pickedURL: string) => {},
+});
+export const useWikiDataHandler = () => {
+  return useContext(WikiDataContextHandler);
+};
+
+// Component wrapping all functionality
 export const WikiDataProvider = ({
   children,
 }: {
@@ -89,6 +100,7 @@ export const WikiDataProvider = ({
   const [wikiState, setWikiState] = useState<IState>({
     type: EWikiStates.INITIAL,
   });
+
   const fetchInitialData = async () => {
     setWikiState({ type: EWikiStates.LOADING });
     try {
@@ -106,13 +118,29 @@ export const WikiDataProvider = ({
       console.log(err);
     }
   };
+
   useEffect(() => {
     fetchInitialData();
   }, []);
 
+  const handleCategoryPick = async (pickedURL: string) => {
+    console.log(pickedURL);
+    try {
+      const subCategoryData = await Axios.get(`${API_URL}${pickedURL}`);
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  const wikiStateHandlers: IHandler = {
+    onCategoryPick: handleCategoryPick,
+  };
+
   return (
     <WikiDataContext.Provider value={wikiState}>
-      {children}
+      <WikiDataContextHandler.Provider value={wikiStateHandlers}>
+        {children}
+      </WikiDataContextHandler.Provider>
     </WikiDataContext.Provider>
   );
 };
