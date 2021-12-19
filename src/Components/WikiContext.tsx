@@ -134,13 +134,15 @@ export const WikiDataProvider = ({
             (entry: { index: string; name: string; url: string }) => entry
           )
         );
-      await console.log(subCategoryData);
       const formattedData: ILink[] = subCategoryData.map(
         (entry: { index: string; name: string; url: string }) => {
-          return { label: Object(entry).name, url: Object(entry).url };
+          return {
+            label: Object(entry).name,
+            url: Object(entry).url,
+            index: Object(entry).index,
+          };
         }
       );
-      console.log(formattedData);
       if (wikiState.type >= EWikiStates.LOADED) {
         setWikiState({
           type: EWikiStates.CATEGORY_PICKED,

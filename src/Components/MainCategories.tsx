@@ -22,7 +22,7 @@ const MainCategories: React.FC<Props> = () => {
     <List sx={{ mr: 2, width: 200 }}>
       {categories.map((category: ILink) => {
         return (
-          <ListItem key={category.url}>
+          <ListItem key={category.label}>
             <Button
               data-url={category.url}
               fullWidth

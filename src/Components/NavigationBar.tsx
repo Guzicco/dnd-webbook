@@ -18,6 +18,7 @@ import { IRouteName } from "../App";
 export interface ILink {
   url: string;
   label: string;
+  index?: string;
 }
 interface Props {
   routes: { [key in IRouteName]: ILink };
