@@ -1,4 +1,4 @@
-import { Link, List, ListItem } from "@mui/material";
+import { Button, List, ListItem } from "@mui/material";
 import React from "react";
 import trimString from "../Utils/trimString";
 import { ILink } from "./NavigationBar";
@@ -16,14 +16,10 @@ const SubCategories = () => {
     <List sx={{ mr: 2, width: 200 }}>
       {categories.map((category: ILink) => {
         return (
-          <ListItem key={category.label}>
-            <Link
-              onClick={(event) => {
-                console.log(event);
-              }}
-            >
+          <ListItem key={category.url}>
+            <Button variant="contained" fullWidth>
               {trimString(category.label)}
-            </Link>
+            </Button>
           </ListItem>
         );
       })}

@@ -100,11 +100,12 @@ export const WikiDataProvider = ({
   const [wikiState, setWikiState] = useState<IState>({
     type: EWikiStates.INITIAL,
   });
+  const [mainCategories, setMainCategories] = useState<ILink[]>([]);
 
   const fetchInitialData = async () => {
     setWikiState({ type: EWikiStates.LOADING });
     try {
-      const initialData = await Axios.get(API_URL)
+      const initialData = await Axios.get(`${API_URL}/api`)
         .then((resp) => resp.data)
         .then((data) => Object.entries(data).map((entry) => entry));
       const formattedData = initialData.map((entry) => {
@@ -114,6 +115,7 @@ export const WikiDataProvider = ({
         type: EWikiStates.LOADED,
         state: { categoriesList: formattedData },
       });
+      setMainCategories(formattedData);
     } catch (err) {
       console.log(err);
     }
@@ -124,9 +126,33 @@ export const WikiDataProvider = ({
   }, []);
 
   const handleCategoryPick = async (pickedURL: string) => {
-    console.log(pickedURL);
     try {
-      const subCategoryData = await Axios.get(`${API_URL}${pickedURL}`);
+      const subCategoryData = await Axios.get(`${API_URL}${pickedURL}`)
+        .then((response) => response.data.results)
+        .then((data) =>
+          data.map(
+            (entry: { index: string; name: string; url: string }) => entry
+          )
+        );
+      await console.log(subCategoryData);
+      const formattedData: ILink[] = subCategoryData.map(
+        (entry: { index: string; name: string; url: string }) => {
+          return { label: Object(entry).name, url: Object(entry).url };
+        }
+      );
+      console.log(formattedData);
+      if (wikiState.type >= EWikiStates.LOADED) {
+        setWikiState({
+          type: EWikiStates.CATEGORY_PICKED,
+          state: {
+            categoriesList: mainCategories,
+            categoryPicked: {
+              name: pickedURL,
+              subcategories: formattedData,
+            },
+          },
+        });
+      }
     } catch (err) {
       console.log(err);
     }

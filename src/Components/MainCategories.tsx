@@ -14,12 +14,15 @@ const MainCategories: React.FC<Props> = () => {
   if (wikiData.type === EWikiStates.LOADED) {
     categories = wikiData.state.categoriesList;
   }
+  if (wikiData.type === EWikiStates.CATEGORY_PICKED) {
+    categories = wikiData.state.categoriesList;
+  }
 
   return (
     <List sx={{ mr: 2, width: 200 }}>
       {categories.map((category: ILink) => {
         return (
-          <ListItem key={category.label}>
+          <ListItem key={category.url}>
             <Button
               data-url={category.url}
               fullWidth
