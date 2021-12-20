@@ -2,27 +2,36 @@ import { Box, Button, List, ListItem, Pagination } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import trimString from "../Utils/trimString";
 import { ILink } from "./NavigationBar";
-import { EWikiStates, useWikiData } from "./WikiContext";
+import { EWikiStates, useWikiData, useWikiDataHandler } from "./WikiContext";
 
 const SubCategories = () => {
   const wikiData = useWikiData();
-  let categories: ILink[] = [];
+  const wikiDataHanlder = useWikiDataHandler();
   const [currentPage, setCurrentPage] = useState<number>(0);
   const [displayedItems, setDisplayedItems] = useState<ILink[]>([]);
 
-  if (wikiData.type === EWikiStates.CATEGORY_PICKED) {
-    categories = wikiData.state.categoryPicked.subcategories;
-  }
-
-  const paginationLength = Math.ceil(categories.length / 10 - 1);
+  const itemsPerPage = 15;
+  const paginationLength =
+    wikiData.type === EWikiStates.CATEGORY_PICKED ||
+    wikiData.type === EWikiStates.ITEM_PICKED
+      ? Math.ceil(
+          wikiData.state.categoryPicked.itemsList.length / itemsPerPage - 1
+        )
+      : 0;
 
   useEffect(() => {
-    let toDisplay =
-      categories.length === 1
-        ? categories
-        : categories.slice((currentPage - 1) * 10, 10 * currentPage - 1);
+    const toDisplay =
+      wikiData.type === EWikiStates.CATEGORY_PICKED ||
+      wikiData.type === EWikiStates.ITEM_PICKED
+        ? wikiData.state.categoryPicked.itemsList.length === 1
+          ? wikiData.state.categoryPicked.itemsList
+          : wikiData.state.categoryPicked.itemsList.slice(
+              (currentPage - 1) * itemsPerPage,
+              itemsPerPage * currentPage - 1
+            )
+        : [];
     setDisplayedItems(toDisplay);
-  }, [currentPage, wikiData, categories]);
+  }, [wikiData, currentPage]);
 
   return (
     <div>
@@ -34,7 +43,6 @@ const SubCategories = () => {
           hideNextButton={true}
           hidePrevButton={true}
           onChange={(event: React.ChangeEvent<any>, page: number) => {
-            console.log(page);
             setCurrentPage(page);
           }}
         />
@@ -44,8 +52,15 @@ const SubCategories = () => {
       <List sx={{ mr: 2, width: 200 }}>
         {displayedItems.map((category: ILink) => {
           return (
-            <ListItem sx={{ maxHeight: 100 }} key={category.index}>
-              <Button variant="contained" fullWidth>
+            <ListItem key={category.index}>
+              <Button
+                variant="contained"
+                fullWidth
+                data-url={category.url}
+                onClick={(event: any) =>
+                  wikiDataHanlder.onItemPick(event.target.dataset.url)
+                }
+              >
                 {trimString(category.label)}
               </Button>
             </ListItem>

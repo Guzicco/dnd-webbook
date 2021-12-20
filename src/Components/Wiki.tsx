@@ -1,7 +1,7 @@
 import { Grid } from "@mui/material";
 import React from "react";
-import MainCategories from "./MainCategories";
-import SubCategories from "./SubCategories";
+import WikiEntriesList from "./WikiEntriesList";
+import WikiMainCategories from "./WikiMainCategories";
 
 interface Props {}
 
@@ -9,10 +9,10 @@ const Wiki: React.FC<Props> = () => {
   return (
     <Grid container>
       <Grid item>
-        <MainCategories />
+        <WikiMainCategories />
       </Grid>
       <Grid item>
-        <SubCategories />
+        <WikiEntriesList />
       </Grid>
     </Grid>
   );

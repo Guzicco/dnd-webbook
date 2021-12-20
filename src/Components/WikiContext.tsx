@@ -15,19 +15,18 @@ interface ICharacterAbility {
   title: string;
   description: string;
 }
-type IWikiConcreteEntry = ICharacterTrait | ICharacterAbility;
+type IWikiConcreteEntry = any | ICharacterTrait | ICharacterAbility;
 
 // Context/Data structure
 export enum EWikiStates {
-  "INITIAL",
-  "LOADING",
-  "LOADED",
-  "CATEGORY_PICKED",
-  "SUBCATEGORY_PICKED",
-  "ITEM_PICKED",
+  INITIAL,
+  LOADING,
+  LOADED,
+  CATEGORY_PICKED,
+  ITEM_PICKED,
 }
 export type IState =
-  // WARN: some categories might not have subcategories/items
+  // WARN: some categories might not have itemsList/items
   | { type: EWikiStates.INITIAL }
   | { type: EWikiStates.LOADING }
   | {
@@ -42,21 +41,7 @@ export type IState =
         categoriesList: ILink[];
         categoryPicked: {
           name: string;
-          subcategories: ILink[];
-        };
-      };
-    }
-  | {
-      type: EWikiStates.SUBCATEGORY_PICKED;
-      state: {
-        categoriesList: ILink[];
-        categoryPicked: {
-          name: string;
-          subcategories: ILink[];
-        };
-        subCategoryPicked: {
-          name: string;
-          wikiEntries: ILink[];
+          itemsList: ILink[];
         };
       };
     }
@@ -66,15 +51,12 @@ export type IState =
         categoriesList: ILink[];
         categoryPicked: {
           name: string;
-          subcategories: ILink[];
+          itemsList: ILink[];
         };
-        subCategoryPicked: {
-          name: string;
-          wikiEntries: ILink[];
-        };
-        item: IWikiConcreteEntry;
+        itemPicked: IWikiConcreteEntry;
       };
     };
+
 const WikiDataContext = createContext<IState>({ type: EWikiStates.INITIAL });
 export const useWikiData = () => {
   return useContext(WikiDataContext);
@@ -82,10 +64,12 @@ export const useWikiData = () => {
 
 // Context/Data Handling logic
 export type IHandler = {
-  onCategoryPick: (pickedURL: string) => void;
+  onCategoryPick: (pickedCategory: string) => void;
+  onItemPick: (pickedItem: string) => void;
 };
 const WikiDataContextHandler = createContext<IHandler>({
-  onCategoryPick: (pickedURL: string) => {},
+  onCategoryPick: (pickedCategory: string) => {},
+  onItemPick: (pickedItem: string) => {},
 });
 export const useWikiDataHandler = () => {
   return useContext(WikiDataContextHandler);
@@ -101,6 +85,10 @@ export const WikiDataProvider = ({
     type: EWikiStates.INITIAL,
   });
   const [mainCategories, setMainCategories] = useState<ILink[]>([]);
+  const [pickedCategory, setPickedCategory] = useState<{
+    name: string;
+    itemsList: ILink[];
+  }>({ name: "", itemsList: [] });
 
   const fetchInitialData = async () => {
     setWikiState({ type: EWikiStates.LOADING });
@@ -120,14 +108,13 @@ export const WikiDataProvider = ({
       console.log(err);
     }
   };
-
   useEffect(() => {
     fetchInitialData();
   }, []);
 
-  const handleCategoryPick = async (pickedURL: string) => {
+  const handleCategoryPick = async (pickedCategory: string) => {
     try {
-      const subCategoryData = await Axios.get(`${API_URL}${pickedURL}`)
+      const subCategoryData = await Axios.get(`${API_URL}${pickedCategory}`)
         .then((response) => response.data.results)
         .then((data) =>
           data.map(
@@ -143,15 +130,46 @@ export const WikiDataProvider = ({
           };
         }
       );
-      if (wikiState.type >= EWikiStates.LOADED) {
+      if (
+        wikiState.type === EWikiStates.LOADED ||
+        wikiState.type === EWikiStates.CATEGORY_PICKED ||
+        wikiState.type === EWikiStates.ITEM_PICKED
+      ) {
         setWikiState({
           type: EWikiStates.CATEGORY_PICKED,
           state: {
             categoriesList: mainCategories,
             categoryPicked: {
-              name: pickedURL,
-              subcategories: formattedData,
+              name: pickedCategory,
+              itemsList: formattedData,
             },
+          },
+        });
+      }
+      setPickedCategory({ name: pickedCategory, itemsList: formattedData });
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  const handleItemPick: (item: string) => void = async (item) => {
+    try {
+      const entryData = await Axios.get(`${API_URL}${item}`)
+        .then((response) => response.data)
+        .then((data) => data);
+      if (
+        wikiState.type === EWikiStates.CATEGORY_PICKED ||
+        wikiState.type === EWikiStates.ITEM_PICKED
+      ) {
+        setWikiState({
+          type: EWikiStates.ITEM_PICKED,
+          state: {
+            categoriesList: mainCategories,
+            categoryPicked: {
+              name: pickedCategory.name,
+              itemsList: pickedCategory.itemsList,
+            },
+            itemPicked: { entryData },
           },
         });
       }
@@ -162,6 +180,7 @@ export const WikiDataProvider = ({
 
   const wikiStateHandlers: IHandler = {
     onCategoryPick: handleCategoryPick,
+    onItemPick: handleItemPick,
   };
 
   return (
