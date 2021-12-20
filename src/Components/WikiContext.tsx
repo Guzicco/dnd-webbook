@@ -3,20 +3,6 @@ import { API_URL } from "../Globals";
 import Axios from "axios";
 import { ILink } from "./NavigationBar";
 
-interface ICharacterTrait {
-  // strength
-  id: string;
-  title: string;
-  description: string;
-}
-interface ICharacterAbility {
-  // melee
-  id: string;
-  title: string;
-  description: string;
-}
-type IWikiConcreteEntry = any | ICharacterTrait | ICharacterAbility;
-
 // Context/Data structure
 export enum EWikiStates {
   INITIAL,
@@ -26,7 +12,6 @@ export enum EWikiStates {
   ITEM_PICKED,
 }
 export type IState =
-  // WARN: some categories might not have itemsList/items
   | { type: EWikiStates.INITIAL }
   | { type: EWikiStates.LOADING }
   | {
@@ -53,7 +38,7 @@ export type IState =
           name: string;
           itemsList: ILink[];
         };
-        itemPicked: IWikiConcreteEntry;
+        itemPicked: any; //logic is handled in WikiEntryDisplay
       };
     };
 
@@ -84,11 +69,6 @@ export const WikiDataProvider = ({
   const [wikiState, setWikiState] = useState<IState>({
     type: EWikiStates.INITIAL,
   });
-  const [mainCategories, setMainCategories] = useState<ILink[]>([]);
-  const [pickedCategory, setPickedCategory] = useState<{
-    name: string;
-    itemsList: ILink[];
-  }>({ name: "", itemsList: [] });
 
   const fetchInitialData = async () => {
     setWikiState({ type: EWikiStates.LOADING });
@@ -103,7 +83,6 @@ export const WikiDataProvider = ({
         type: EWikiStates.LOADED,
         state: { categoriesList: formattedData },
       });
-      setMainCategories(formattedData);
     } catch (err) {
       console.log(err);
     }
@@ -138,7 +117,7 @@ export const WikiDataProvider = ({
         setWikiState({
           type: EWikiStates.CATEGORY_PICKED,
           state: {
-            categoriesList: mainCategories,
+            categoriesList: wikiState.state.categoriesList,
             categoryPicked: {
               name: pickedCategory,
               itemsList: formattedData,
@@ -146,7 +125,6 @@ export const WikiDataProvider = ({
           },
         });
       }
-      setPickedCategory({ name: pickedCategory, itemsList: formattedData });
     } catch (err) {
       console.log(err);
     }
@@ -164,15 +142,13 @@ export const WikiDataProvider = ({
         setWikiState({
           type: EWikiStates.ITEM_PICKED,
           state: {
-            categoriesList: mainCategories,
-            categoryPicked: {
-              name: pickedCategory.name,
-              itemsList: pickedCategory.itemsList,
-            },
-            itemPicked: { entryData },
+            categoriesList: wikiState.state.categoriesList,
+            categoryPicked: wikiState.state.categoryPicked,
+            itemPicked: entryData,
           },
         });
       }
+      console.log(entryData);
     } catch (err) {
       console.log(err);
     }
