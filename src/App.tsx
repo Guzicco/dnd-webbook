@@ -1,4 +1,3 @@
-import { env } from "process";
 import React from "react";
 import { Route, Routes } from "react-router";
 import { BrowserRouter as Router } from "react-router-dom";
@@ -7,7 +6,6 @@ import Wiki from "./Components/Wiki";
 import { WikiDataProvider } from "./Components/WikiContext";
 
 export type IRouteName = "about" | "wiki" | "characters" | "diceSimulator";
-const isProduction = env.NODE_ENV;
 
 const routes: { [key in IRouteName]: ILink } = {
   about: {
