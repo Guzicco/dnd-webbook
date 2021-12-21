@@ -2,6 +2,7 @@ import React, { createContext, useState, useContext, useEffect } from "react";
 import { API_URL } from "../Globals";
 import Axios from "axios";
 import { ILink } from "./NavigationBar";
+import { EWikiEntryType } from "./WikiEntryDisplay";
 
 // Context/Data structure
 export enum EWikiStates {
@@ -11,6 +12,7 @@ export enum EWikiStates {
   CATEGORY_PICKED,
   ITEM_PICKED,
 }
+
 export type IState =
   | { type: EWikiStates.INITIAL }
   | { type: EWikiStates.LOADING }
@@ -25,7 +27,8 @@ export type IState =
       state: {
         categoriesList: ILink[];
         categoryPicked: {
-          name: string;
+          type: number;
+          url: string;
           itemsList: ILink[];
         };
       };
@@ -35,7 +38,8 @@ export type IState =
       state: {
         categoriesList: ILink[];
         categoryPicked: {
-          name: string;
+          type: number;
+          url: string;
           itemsList: ILink[];
         };
         itemPicked: any; //logic is handled in WikiEntryDisplay
@@ -49,12 +53,18 @@ export const useWikiData = () => {
 
 // Context/Data Handling logic
 export type IHandler = {
-  onCategoryPick: (pickedCategory: string) => void;
-  onItemPick: (pickedItem: string) => void;
+  onCategoryPick: (
+    pickedCategoryURL: string,
+    pickedCategoryLabel: string
+  ) => void;
+  onItemPick: (pickedItemURL: string) => void;
 };
 const WikiDataContextHandler = createContext<IHandler>({
-  onCategoryPick: (pickedCategory: string) => {},
-  onItemPick: (pickedItem: string) => {},
+  onCategoryPick: (
+    pickedCategoryURL: string,
+    pickedCategoryLabel: string
+  ) => {},
+  onItemPick: (pickedItemURL: string) => {},
 });
 export const useWikiDataHandler = () => {
   return useContext(WikiDataContextHandler);
@@ -91,16 +101,21 @@ export const WikiDataProvider = ({
     fetchInitialData();
   }, []);
 
-  const handleCategoryPick = async (pickedCategory: string) => {
+  const handleCategoryPick = async (
+    pickedCategoryURL: string,
+    pickedCategoryLabel: string
+  ) => {
     try {
-      const subCategoryData = await Axios.get(`${API_URL}${pickedCategory}`)
+      const pickedCategoryData = await Axios.get(
+        `${API_URL}${pickedCategoryURL}`
+      )
         .then((response) => response.data.results)
         .then((data) =>
           data.map(
             (entry: { index: string; name: string; url: string }) => entry
           )
         );
-      const formattedData: ILink[] = subCategoryData.map(
+      const formattedData: ILink[] = pickedCategoryData.map(
         (entry: { index: string; name: string; url: string }) => {
           return {
             label: Object(entry).name,
@@ -114,12 +129,16 @@ export const WikiDataProvider = ({
         wikiState.type === EWikiStates.CATEGORY_PICKED ||
         wikiState.type === EWikiStates.ITEM_PICKED
       ) {
+        console.log(pickedCategoryLabel);
         setWikiState({
           type: EWikiStates.CATEGORY_PICKED,
           state: {
             categoriesList: wikiState.state.categoriesList,
             categoryPicked: {
-              name: pickedCategory,
+              type: EWikiEntryType[
+                pickedCategoryLabel as keyof typeof EWikiEntryType
+              ],
+              url: pickedCategoryURL,
               itemsList: formattedData,
             },
           },
@@ -130,9 +149,15 @@ export const WikiDataProvider = ({
     }
   };
 
-  const handleItemPick: (item: string) => void = async (item) => {
+  const handleItemPick: (pickedItemURL: string) => void = async (
+    pickedItemURL
+  ) => {
     try {
-      const entryData = await Axios.get(`${API_URL}${item}`)
+      // api aligments section bug work around
+      const urlFixed = pickedItemURL.startsWith("/")
+        ? pickedItemURL
+        : `/${pickedItemURL}`;
+      const entryData = await Axios.get(`${API_URL}${urlFixed}`)
         .then((response) => response.data)
         .then((data) => data);
       if (
@@ -148,7 +173,6 @@ export const WikiDataProvider = ({
           },
         });
       }
-      console.log(entryData);
     } catch (err) {
       console.log(err);
     }

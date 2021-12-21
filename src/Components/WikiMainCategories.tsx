@@ -11,7 +11,7 @@ const MainCategories: React.FC<Props> = () => {
   const wikiDataHanlder = useWikiDataHandler();
 
   return (
-    <List sx={{ mr: 2, width: 200 }}>
+    <List>
       {wikiData.type === EWikiStates.LOADED ||
       wikiData.type === EWikiStates.CATEGORY_PICKED ||
       wikiData.type === EWikiStates.ITEM_PICKED ? (
@@ -20,11 +20,15 @@ const MainCategories: React.FC<Props> = () => {
             <ListItem key={category.label}>
               <Button
                 data-url={category.url}
+                data-label={category.label}
                 fullWidth
                 variant="contained"
                 disableElevation={true}
                 onClick={(event: any) => {
-                  wikiDataHanlder.onCategoryPick(event.target.dataset.url);
+                  wikiDataHanlder.onCategoryPick(
+                    event.target.dataset.url,
+                    event.target.dataset.label
+                  );
                 }}
               >
                 {trimString(category.label)}
