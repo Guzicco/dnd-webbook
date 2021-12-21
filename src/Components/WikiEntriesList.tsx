@@ -36,20 +36,22 @@ const SubCategories = () => {
   return (
     <div>
       {paginationLength > 0 ? (
-        <Pagination
-          sx={{ mt: 2 }}
-          count={paginationLength + 1}
-          size="small"
-          hideNextButton={true}
-          hidePrevButton={true}
-          onChange={(event: React.ChangeEvent<any>, page: number) => {
-            setCurrentPage(page);
-          }}
-        />
+        <Box sx={{ display: "flex" }}>
+          <Pagination
+            sx={{ mt: 2, mx: "auto" }}
+            count={paginationLength + 1}
+            size="small"
+            hideNextButton={true}
+            hidePrevButton={true}
+            onChange={(event: React.ChangeEvent<any>, page: number) => {
+              setCurrentPage(page);
+            }}
+          />
+        </Box>
       ) : (
         <Box sx={{ height: 26, mt: 2 }}></Box>
       )}
-      <List sx={{ mr: 2, width: 200 }}>
+      <List sx={{ mr: 2 }}>
         {displayedItems.map((category: ILink) => {
           return (
             <ListItem key={category.index}>
