@@ -88,8 +88,8 @@ export const WikiDataProvider = ({
     try {
       const initialData: ILink[] = await Axios.get(`${API_URL}/api`).then(
         (response) => {
-          return Object.entries(response.data).map((entry) => {
-            return { name: entry[0] as string, url: entry[1] as string };
+          return Object.keys(response.data).map((key) => {
+            return { name: key as string, url: response.data[key] as string };
           });
         }
       );
