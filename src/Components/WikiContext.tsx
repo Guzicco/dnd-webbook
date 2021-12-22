@@ -3,6 +3,7 @@ import { API_URL } from "../Globals";
 import Axios from "axios";
 import { ILink } from "./NavigationBar";
 import { EWikiEntryType } from "./WikiEntryDisplay";
+import fixURL from "../Utils/fixURL";
 
 // Context/Data structure
 export enum EWikiStates {
@@ -58,6 +59,7 @@ export type IHandler = {
     pickedCategoryLabel: string
   ) => void;
   onItemPick: (pickedItemURL: string) => void;
+  onInItemLinkClick: (inItemURL: string) => void;
 };
 const WikiDataContextHandler = createContext<IHandler>({
   onCategoryPick: (
@@ -65,6 +67,7 @@ const WikiDataContextHandler = createContext<IHandler>({
     pickedCategoryLabel: string
   ) => {},
   onItemPick: (pickedItemURL: string) => {},
+  onInItemLinkClick: (inItemURL: string) => {},
 });
 export const useWikiDataHandler = () => {
   return useContext(WikiDataContextHandler);
@@ -153,11 +156,7 @@ export const WikiDataProvider = ({
     pickedItemURL
   ) => {
     try {
-      // api aligments section bug work around
-      const urlFixed = pickedItemURL.startsWith("/")
-        ? pickedItemURL
-        : `/${pickedItemURL}`;
-      const entryData = await Axios.get(`${API_URL}${urlFixed}`)
+      const entryData = await Axios.get(`${API_URL}${fixURL(pickedItemURL)}`)
         .then((response) => response.data)
         .then((data) => data);
       if (
@@ -177,10 +176,14 @@ export const WikiDataProvider = ({
       console.log(err);
     }
   };
+  const handleRedirectFromItem: (inItemURL: string) => void = async (
+    inItemURL: string
+  ) => {};
 
   const wikiStateHandlers: IHandler = {
     onCategoryPick: handleCategoryPick,
     onItemPick: handleItemPick,
+    onInItemLinkClick: handleRedirectFromItem,
   };
 
   return (
