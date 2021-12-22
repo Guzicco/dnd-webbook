@@ -132,7 +132,6 @@ export const WikiDataProvider = ({
         wikiState.type === EWikiStates.CATEGORY_PICKED ||
         wikiState.type === EWikiStates.ITEM_PICKED
       ) {
-        console.log(pickedCategoryLabel);
         setWikiState({
           type: EWikiStates.CATEGORY_PICKED,
           state: {
@@ -178,7 +177,50 @@ export const WikiDataProvider = ({
   };
   const handleRedirectFromItem: (inItemURL: string) => void = async (
     inItemURL: string
-  ) => {};
+  ) => {
+    const fixedURL = fixURL(inItemURL);
+    const categoryURL = fixedURL.slice(0, fixedURL.lastIndexOf("/"));
+    const categoryLabel = categoryURL.slice(categoryURL.lastIndexOf("/") + 1);
+    try {
+      const entryData = await Axios.get(`${API_URL}${fixURL(inItemURL)}`)
+        .then((response) => response.data)
+        .then((data) => data);
+      const categoryData = await Axios.get(`${API_URL}${categoryURL}`)
+        .then((response) => response.data.results)
+        .then((data) =>
+          data.map(
+            (entry: { index: string; name: string; url: string }) => entry
+          )
+        );
+      const formattedCategoryData: ILink[] = categoryData.map(
+        (entry: { index: string; name: string; url: string }) => {
+          return {
+            label: Object(entry).name,
+            url: Object(entry).url,
+            index: Object(entry).index,
+          };
+        }
+      );
+      if (wikiState.type === EWikiStates.ITEM_PICKED) {
+        setWikiState({
+          type: EWikiStates.ITEM_PICKED,
+          state: {
+            categoriesList: wikiState.state.categoriesList,
+            categoryPicked: {
+              type: EWikiEntryType[
+                categoryLabel as keyof typeof EWikiEntryType
+              ],
+              url: `${categoryURL}`,
+              itemsList: formattedCategoryData,
+            },
+            itemPicked: entryData,
+          },
+        });
+      }
+    } catch (err) {
+      console.log(err);
+    }
+  };
 
   const wikiStateHandlers: IHandler = {
     onCategoryPick: handleCategoryPick,

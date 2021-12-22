@@ -1,6 +1,7 @@
 import React from "react";
 import { EWikiStates, useWikiData } from "./WikiContext";
 import DisplayAbility from "./WikiEntryDisplays/DisplayAbility";
+import DisplaySkills from "./WikiEntryDisplays/DisplaySkills";
 
 export enum EWikiEntryType {
   "ability-scores",
@@ -38,6 +39,9 @@ const WikiEntryDisplay = () => {
       }
       case EWikiEntryType["alignments"]: {
         return <div>there will be alignments</div>;
+      }
+      case EWikiEntryType["skills"]: {
+        return <DisplaySkills></DisplaySkills>;
       }
       default:
         return <div>not yet implemented</div>;

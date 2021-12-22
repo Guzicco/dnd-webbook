@@ -22,10 +22,9 @@ interface IAbilityScore {
 
 const DisplayAbility = () => {
   const wikiData = useWikiData();
-  const wikiDataHanlder = useWikiDataHandler();
+  const wikiDataHandler = useWikiDataHandler();
   const entryData: IAbilityScore =
     wikiData.type === EWikiStates.ITEM_PICKED ? wikiData.state.itemPicked : {};
-  console.log(entryData);
   return (
     <Card sx={{ mt: 3 }}>
       <CardHeader title={entryData.full_name}></CardHeader>
@@ -45,7 +44,7 @@ const DisplayAbility = () => {
                   <Link
                     underline="hover"
                     onClick={() => {
-                      console.log(skill.url);
+                      wikiDataHandler.onInItemLinkClick(skill.url);
                     }}
                   >
                     {skill.name}
