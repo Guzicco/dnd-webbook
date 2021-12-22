@@ -1,6 +1,6 @@
 import { Box, Button, List, ListItem, Pagination } from "@mui/material";
 import React, { useEffect, useState } from "react";
-import trimString from "../Utils/trimString";
+import TrimString from "../Utils/TrimString";
 import { ILink } from "./NavigationBar";
 import { EWikiStates, useWikiData, useWikiDataHandler } from "./WikiContext";
 
@@ -63,7 +63,7 @@ const SubCategories = () => {
                   wikiDataHanlder.onItemPick(event.target.dataset.url)
                 }
               >
-                {trimString(category.label)}
+                {TrimString(category.name)}
               </Button>
             </ListItem>
           );

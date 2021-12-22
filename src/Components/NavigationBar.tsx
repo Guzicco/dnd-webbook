@@ -17,7 +17,7 @@ import { IRouteName } from "../App";
 
 export interface ILink {
   url: string;
-  label: string;
+  name: string;
   index?: string;
 }
 interface Props {
@@ -83,8 +83,8 @@ const NavigationBar: React.FC<Props> = ({ routes }) => {
               }}
             >
               {Object.entries(routes).map(([key, route]) => (
-                <MenuItem key={route.label} onClick={handleCloseNavMenu}>
-                  <Typography textAlign="center">{route.label}</Typography>
+                <MenuItem key={route.name} onClick={handleCloseNavMenu}>
+                  <Typography textAlign="center">{route.name}</Typography>
                 </MenuItem>
               ))}
             </Menu>
@@ -100,12 +100,12 @@ const NavigationBar: React.FC<Props> = ({ routes }) => {
           <Box sx={{ flexGrow: 1, display: { xs: "none", md: "flex" } }}>
             {Object.entries(routes).map(([key, route]) => (
               <Button
-                key={route.label}
+                key={route.name}
                 onClick={handleCloseNavMenu}
                 sx={{ my: 2, color: "white", display: "block" }}
               >
                 <Typography color="primary">
-                  <RouterLink to={`/${route.url}`}>{route.label}</RouterLink>
+                  <RouterLink to={`/${route.url}`}>{route.name}</RouterLink>
                 </Typography>
               </Button>
             ))}

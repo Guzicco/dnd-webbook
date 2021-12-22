@@ -31,8 +31,8 @@ const DisplayAbility = () => {
       <CardContent>
         <Paper sx={{ p: 2 }}>
           <Typography variant="h5">Description</Typography>
-          {entryData.desc.map((part) => (
-            <Typography>{part}</Typography>
+          {entryData.desc.map((part, index) => (
+            <Typography key={index}>{part}</Typography>
           ))}
         </Paper>
         {entryData.skills.length !== 0 ? (

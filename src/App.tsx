@@ -9,19 +9,19 @@ export type IRouteName = "about" | "wiki" | "characters" | "diceSimulator";
 
 const routes: { [key in IRouteName]: ILink } = {
   about: {
-    label: "About",
+    name: "About",
     url: "",
   },
   wiki: {
-    label: "Wiki",
+    name: "Wiki",
     url: "wiki",
   },
   characters: {
-    label: "Characters",
+    name: "Characters",
     url: "characters",
   },
   diceSimulator: {
-    label: "Dice Simulator",
+    name: "Dice Simulator",
     url: "diceSimulator",
   },
 };

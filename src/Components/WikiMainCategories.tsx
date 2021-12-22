@@ -1,6 +1,6 @@
 import { Button, List, ListItem } from "@mui/material";
 import React from "react";
-import trimString from "../Utils/trimString";
+import TrimString from "../Utils/TrimString";
 import { ILink } from "./NavigationBar";
 import { useWikiData, EWikiStates, useWikiDataHandler } from "./WikiContext";
 
@@ -17,10 +17,10 @@ const MainCategories: React.FC<Props> = () => {
       wikiData.type === EWikiStates.ITEM_PICKED ? (
         wikiData.state.categoriesList.map((category: ILink) => {
           return (
-            <ListItem key={category.label}>
+            <ListItem key={category.name}>
               <Button
                 data-url={category.url}
-                data-label={category.label}
+                data-label={category.name}
                 fullWidth
                 variant="contained"
                 disableElevation={true}
@@ -31,7 +31,7 @@ const MainCategories: React.FC<Props> = () => {
                   );
                 }}
               >
-                {trimString(category.label)}
+                {TrimString(category.name)}
               </Button>
             </ListItem>
           );

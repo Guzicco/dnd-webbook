@@ -3,7 +3,7 @@ import { API_URL } from "../Globals";
 import Axios from "axios";
 import { ILink } from "./NavigationBar";
 import { EWikiEntryType } from "./WikiEntryDisplay";
-import fixURL from "../Utils/fixURL";
+import FixURL from "../Utils/FixURL";
 
 // Context/Data structure
 export enum EWikiStates {
@@ -86,15 +86,16 @@ export const WikiDataProvider = ({
   const fetchInitialData = async () => {
     setWikiState({ type: EWikiStates.LOADING });
     try {
-      const initialData = await Axios.get(`${API_URL}/api`)
-        .then((resp) => resp.data)
-        .then((data) => Object.entries(data).map((entry) => entry));
-      const formattedData = initialData.map((entry) => {
-        return { label: entry[0], url: String(entry[1]) };
-      });
+      const initialData: ILink[] = await Axios.get(`${API_URL}/api`).then(
+        (response) => {
+          return Object.entries(response.data).map((entry) => {
+            return { name: entry[0] as string, url: entry[1] as string };
+          });
+        }
+      );
       setWikiState({
         type: EWikiStates.LOADED,
-        state: { categoriesList: formattedData },
+        state: { categoriesList: initialData },
       });
     } catch (err) {
       console.log(err);
@@ -109,24 +110,10 @@ export const WikiDataProvider = ({
     pickedCategoryLabel: string
   ) => {
     try {
-      const pickedCategoryData = await Axios.get(
-        `${API_URL}${pickedCategoryURL}`
-      )
-        .then((response) => response.data.results)
-        .then((data) =>
-          data.map(
-            (entry: { index: string; name: string; url: string }) => entry
-          )
-        );
-      const formattedData: ILink[] = pickedCategoryData.map(
-        (entry: { index: string; name: string; url: string }) => {
-          return {
-            label: Object(entry).name,
-            url: Object(entry).url,
-            index: Object(entry).index,
-          };
-        }
-      );
+      const pickedCategoryData = await Axios.request<ILink[]>({
+        url: `${API_URL}${pickedCategoryURL}`,
+        transformResponse: [(data) => JSON.parse(data).results],
+      }).then((response) => response.data.map((entry) => entry));
       if (
         wikiState.type === EWikiStates.LOADED ||
         wikiState.type === EWikiStates.CATEGORY_PICKED ||
@@ -141,7 +128,7 @@ export const WikiDataProvider = ({
                 pickedCategoryLabel as keyof typeof EWikiEntryType
               ],
               url: pickedCategoryURL,
-              itemsList: formattedData,
+              itemsList: pickedCategoryData,
             },
           },
         });
@@ -155,9 +142,9 @@ export const WikiDataProvider = ({
     pickedItemURL
   ) => {
     try {
-      const entryData = await Axios.get(`${API_URL}${fixURL(pickedItemURL)}`)
-        .then((response) => response.data)
-        .then((data) => data);
+      const entryData = await Axios.get(
+        `${API_URL}${FixURL(pickedItemURL)}`
+      ).then((response) => response.data);
       if (
         wikiState.type === EWikiStates.CATEGORY_PICKED ||
         wikiState.type === EWikiStates.ITEM_PICKED
@@ -178,38 +165,35 @@ export const WikiDataProvider = ({
   const handleRedirectFromItem: (inItemURL: string) => void = async (
     inItemURL: string
   ) => {
-    const fixedURL = fixURL(inItemURL);
+    const fixedURL = FixURL(inItemURL);
     const categoryURL = fixedURL.slice(0, fixedURL.lastIndexOf("/"));
-    const categoryLabel = categoryURL.slice(categoryURL.lastIndexOf("/") + 1);
+    const categoryName = categoryURL.slice(categoryURL.lastIndexOf("/") + 1);
     try {
-      const entryData = await Axios.get(`${API_URL}${fixURL(inItemURL)}`)
-        .then((response) => response.data)
-        .then((data) => data);
-      const categoryData = await Axios.get(`${API_URL}${categoryURL}`)
-        .then((response) => response.data.results)
-        .then((data) =>
-          data.map(
-            (entry: { index: string; name: string; url: string }) => entry
-          )
-        );
-      const formattedCategoryData: ILink[] = categoryData.map(
-        (entry: { index: string; name: string; url: string }) => {
-          return {
-            label: Object(entry).name,
-            url: Object(entry).url,
-            index: Object(entry).index,
-          };
-        }
+      const entryData = await Axios.get(`${API_URL}${FixURL(inItemURL)}`).then(
+        (response) => response.data
       );
+      const categoryData = await Axios.request<ILink[]>({
+        url: `${API_URL}${categoryURL}`,
+        transformResponse: [
+          (data) => {
+            return JSON.parse(data).results;
+          },
+        ],
+      }).then((response) => response.data.map((entry: ILink) => entry));
+      const formattedCategoryData: ILink[] = categoryData.map((entry) => {
+        return {
+          name: entry.name,
+          url: entry.url,
+          index: entry.index,
+        };
+      });
       if (wikiState.type === EWikiStates.ITEM_PICKED) {
         setWikiState({
           type: EWikiStates.ITEM_PICKED,
           state: {
             categoriesList: wikiState.state.categoriesList,
             categoryPicked: {
-              type: EWikiEntryType[
-                categoryLabel as keyof typeof EWikiEntryType
-              ],
+              type: EWikiEntryType[categoryName as keyof typeof EWikiEntryType],
               url: `${categoryURL}`,
               itemsList: formattedCategoryData,
             },
