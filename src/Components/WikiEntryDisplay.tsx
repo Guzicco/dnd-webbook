@@ -1,4 +1,5 @@
 import React from "react";
+import { ILink } from "./NavigationBar";
 import { EWikiStates, useWikiData } from "./WikiContext";
 import DisplayAbility from "./WikiEntryDisplays/DisplayAbility";
 import DisplaySkills from "./WikiEntryDisplays/DisplaySkills";
@@ -28,6 +29,10 @@ export enum EWikiEntryType {
   "subraces",
   "traits",
   "weapon-properties",
+}
+
+export interface IDisplay extends ILink {
+  desc: string[];
 }
 
 const WikiEntryDisplay = () => {
