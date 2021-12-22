@@ -1,13 +1,13 @@
 import { Paper, Link, List, ListItem, Typography } from "@mui/material";
 import React from "react";
-import { ILink } from "../../NavigationBar";
+import { ILink } from "../../../../App";
 import { useWikiDataHandler } from "../../WikiContext";
 
-interface ISkillsProps {
+interface ISkillsListProps {
   skills: ILink[];
 }
 
-const SkillsList: React.FC<ISkillsProps> = ({ skills }) => {
+const SkillsList: React.FC<ISkillsListProps> = ({ skills }) => {
   const wikiDataHandler = useWikiDataHandler();
 
   return skills.length !== 0 ? (

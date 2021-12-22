@@ -1,8 +1,8 @@
 import { Box, Button, List, ListItem, Pagination } from "@mui/material";
 import React, { useEffect, useState } from "react";
-import TrimString from "../Utils/TrimString";
-import { ILink } from "./NavigationBar";
+import TrimString from "../../Utils/TrimString";
 import { EWikiStates, useWikiData, useWikiDataHandler } from "./WikiContext";
+import { ILink } from "../../App";
 
 const SubCategories = () => {
   const wikiData = useWikiData();

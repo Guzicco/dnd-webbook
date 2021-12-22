@@ -1,7 +1,7 @@
 import { Button, List, ListItem } from "@mui/material";
 import React from "react";
-import TrimString from "../Utils/TrimString";
-import { ILink } from "./NavigationBar";
+import TrimString from "../../Utils/TrimString";
+import { ILink } from "../../App";
 import { useWikiData, EWikiStates, useWikiDataHandler } from "./WikiContext";
 
 interface Props {}

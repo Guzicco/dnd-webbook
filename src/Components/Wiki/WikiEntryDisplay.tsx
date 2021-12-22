@@ -1,5 +1,5 @@
 import React from "react";
-import { ILink } from "./NavigationBar";
+import { ILink } from "../../App";
 import { EWikiStates, useWikiData } from "./WikiContext";
 import DisplayAbility from "./WikiEntryDisplays/DisplayAbility";
 import DisplaySkills from "./WikiEntryDisplays/DisplaySkills";

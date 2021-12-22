@@ -1,6 +1,6 @@
 import { Card, CardContent, CardHeader } from "@mui/material";
 import React from "react";
-import { ILink } from "../NavigationBar";
+import { ILink } from "../../../App";
 import { EWikiStates, useWikiData } from "../WikiContext";
 import { IDisplay } from "../WikiEntryDisplay";
 import Description from "./DisplayComponents/Description";
@@ -11,7 +11,7 @@ interface IAbilityScore extends IDisplay {
   skills: ILink[] | [];
 }
 
-const DisplayAbility = () => {
+const DisplayAbility: React.FC = () => {
   const wikiData = useWikiData();
   const entryData: IAbilityScore =
     wikiData.type === EWikiStates.ITEM_PICKED ? wikiData.state.itemPicked : {};

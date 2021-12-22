@@ -13,13 +13,8 @@ import {
 import React from "react";
 import { Link as RouterLink } from "react-router-dom";
 import MenuIcon from "@mui/icons-material/Menu";
-import { IRouteName } from "../App";
+import { IRouteName, ILink } from "../App";
 
-export interface ILink {
-  url: string;
-  name: string;
-  index?: string;
-}
 interface Props {
   routes: { [key in IRouteName]: ILink };
 }

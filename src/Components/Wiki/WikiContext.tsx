@@ -1,9 +1,9 @@
 import React, { createContext, useState, useContext, useEffect } from "react";
-import { API_URL } from "../Globals";
+import { API_URL } from "../../Globals";
 import Axios from "axios";
-import { ILink } from "./NavigationBar";
+import { ILink } from "../../App";
+import FixURL from "../../Utils/FixURL";
 import { EWikiEntryType } from "./WikiEntryDisplay";
-import FixURL from "../Utils/FixURL";
 
 // Context/Data structure
 export enum EWikiStates {

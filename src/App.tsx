@@ -1,12 +1,16 @@
 import React from "react";
 import { Route, Routes } from "react-router";
 import { BrowserRouter as Router } from "react-router-dom";
-import NavigationBar, { ILink } from "./Components/NavigationBar";
-import Wiki from "./Components/Wiki";
-import { WikiDataProvider } from "./Components/WikiContext";
+import NavigationBar from "./Components/NavigationBar";
+import Wiki from "./Components/Wiki/Wiki";
+import { WikiDataProvider } from "./Components/Wiki/WikiContext";
 
 export type IRouteName = "about" | "wiki" | "characters" | "diceSimulator";
-
+export interface ILink {
+  url: string;
+  name: string;
+  index?: string;
+}
 const routes: { [key in IRouteName]: ILink } = {
   about: {
     name: "About",
