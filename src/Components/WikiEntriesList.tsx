@@ -51,7 +51,7 @@ const SubCategories = () => {
       ) : (
         <Box sx={{ height: 26, mt: 2 }}></Box>
       )}
-      <List sx={{ mr: 2 }}>
+      <List>
         {displayedItems.map((category: ILink) => {
           return (
             <ListItem key={category.index}>
