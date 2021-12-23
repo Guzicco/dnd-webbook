@@ -14,31 +14,29 @@ const MainCategories: React.FC<Props> = () => {
     <List>
       {wikiData.type === EWikiStates.LOADED ||
       wikiData.type === EWikiStates.CATEGORY_PICKED ||
-      wikiData.type === EWikiStates.ITEM_PICKED ? (
-        wikiData.state.categoriesList.map((category: ILink) => {
-          return (
-            <ListItem key={category.name}>
-              <Button
-                data-url={category.url}
-                data-label={category.name}
-                fullWidth
-                variant="contained"
-                disableElevation={true}
-                onClick={(event: any) => {
-                  wikiDataHanlder.onCategoryPick(
-                    event.target.dataset.url,
-                    event.target.dataset.label
-                  );
-                }}
-              >
-                {TrimString(category.name)}
-              </Button>
-            </ListItem>
-          );
-        })
-      ) : (
-        <></>
-      )}
+      wikiData.type === EWikiStates.ITEM_PICKED
+        ? wikiData.state.categoriesList.map((category: ILink) => {
+            return (
+              <ListItem key={category.name}>
+                <Button
+                  data-url={category.url}
+                  data-label={category.name}
+                  fullWidth
+                  variant="contained"
+                  disableElevation={true}
+                  onClick={(event: any) => {
+                    wikiDataHanlder.onCategoryPick(
+                      event.target.dataset.url,
+                      event.target.dataset.label
+                    );
+                  }}
+                >
+                  {TrimString(category.name)}
+                </Button>
+              </ListItem>
+            );
+          })
+        : null}
     </List>
   );
 };
