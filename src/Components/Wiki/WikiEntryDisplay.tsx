@@ -1,7 +1,9 @@
+import { Card } from "@mui/material";
 import React from "react";
 import { ILink } from "../../App";
-import { EWikiStates, useWikiData } from "./WikiContext";
+import { EWikiStates, IState, useWikiData } from "./WikiContext";
 import DisplayAbility from "./WikiEntryDisplays/DisplayAbility";
+import DisplayAlignments from "./WikiEntryDisplays/DisplayAlignments";
 import DisplaySkills from "./WikiEntryDisplays/DisplaySkills";
 
 export enum EWikiEntryType {
@@ -32,27 +34,31 @@ export enum EWikiEntryType {
 }
 
 export interface IDisplay extends ILink {
-  desc: string[];
+  desc: string[] | string;
 }
 
 const WikiEntryDisplay = () => {
   const wikiData = useWikiData();
-  if (wikiData.type === EWikiStates.ITEM_PICKED) {
-    switch (wikiData.state.categoryPicked.type) {
-      case EWikiEntryType["ability-scores"]: {
-        return <DisplayAbility></DisplayAbility>;
+
+  const EntryDisplayed = (data: IState) => {
+    if (data.type === EWikiStates.ITEM_PICKED) {
+      switch (data.state.categoryPicked.type) {
+        case EWikiEntryType["ability-scores"]: {
+          return <DisplayAbility></DisplayAbility>;
+        }
+        case EWikiEntryType["alignments"]: {
+          return <DisplayAlignments></DisplayAlignments>;
+        }
+        case EWikiEntryType["skills"]: {
+          return <DisplaySkills></DisplaySkills>;
+        }
+        default:
+          return <div>not yet implemented</div>;
       }
-      case EWikiEntryType["alignments"]: {
-        return <div>there will be alignments</div>;
-      }
-      case EWikiEntryType["skills"]: {
-        return <DisplaySkills></DisplaySkills>;
-      }
-      default:
-        return <div>not yet implemented</div>;
     }
-  }
-  return <></>;
+  };
+
+  return <Card sx={{ mt: 3 }}>{EntryDisplayed(wikiData)}</Card>;
 };
 
 export default WikiEntryDisplay;
