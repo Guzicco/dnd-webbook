@@ -4,6 +4,7 @@ import { ILink } from "../../App";
 import { EWikiStates, IState, useWikiData } from "./WikiContext";
 import DisplayAbility from "./WikiEntryDisplays/DisplayAbility";
 import DisplayAlignments from "./WikiEntryDisplays/DisplayAlignments";
+import DisplayBackgrounds from "./WikiEntryDisplays/DisplayBackgrounds";
 import DisplaySkills from "./WikiEntryDisplays/DisplaySkills";
 
 export enum EWikiEntryType {
@@ -51,6 +52,9 @@ const WikiEntryDisplay = () => {
         }
         case EWikiEntryType["skills"]: {
           return <DisplaySkills></DisplaySkills>;
+        }
+        case EWikiEntryType["backgrounds"]: {
+          return <DisplayBackgrounds></DisplayBackgrounds>;
         }
         default:
           return <div>not yet implemented</div>;

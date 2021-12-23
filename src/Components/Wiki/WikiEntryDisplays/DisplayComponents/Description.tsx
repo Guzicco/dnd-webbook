@@ -1,19 +1,29 @@
 import { Paper, Typography } from "@mui/material";
 import React from "react";
 
-interface IProps {
+interface IDescriptionProps {
   desc: string[] | string;
+  name?: string;
 }
 
-const Description: React.FC<IProps> = ({ desc }) => {
+const Description: React.FC<IDescriptionProps> = ({ desc, name }) => {
   return (
     <Paper sx={{ p: 2 }}>
       <Typography variant="h5">Description</Typography>
       {Array.isArray(desc) ? (
-        desc.map((part, index) => <Typography key={index}>{part}</Typography>)
+        desc.map((part, index) => (
+          <Typography sx={{ pt: 1 }} key={index}>
+            {part}
+          </Typography>
+        ))
       ) : (
         <Typography>{desc}</Typography>
       )}
+      {name ? (
+        <Typography sx={{ pt: 1 }} variant="h6">
+          Example:<Typography>{name}</Typography>
+        </Typography>
+      ) : null}
     </Paper>
   );
 };

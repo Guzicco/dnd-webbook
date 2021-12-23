@@ -11,7 +11,7 @@ const RelatedLinks: React.FC<IRelatedLinksProps> = ({ relatedLinks }) => {
   const wikiDataHandler = useWikiDataHandler();
   if (Array.isArray(relatedLinks) && relatedLinks.length !== 0) {
     return (
-      <Paper sx={{ p: 2, mt: 2 }}>
+      <Paper sx={{ p: 2, mt: 1 }}>
         <Typography variant="h5">Skills</Typography>
         <List>
           {relatedLinks.map((link) => (
@@ -32,7 +32,7 @@ const RelatedLinks: React.FC<IRelatedLinksProps> = ({ relatedLinks }) => {
   }
   if (!Array.isArray(relatedLinks))
     return (
-      <Paper sx={{ p: 2, mt: 2 }}>
+      <Paper sx={{ p: 2, mt: 1 }}>
         <Typography variant="h5">Related Ability</Typography>
         <List>
           <ListItem>
