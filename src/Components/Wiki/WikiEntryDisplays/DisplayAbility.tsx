@@ -4,7 +4,7 @@ import { ILink } from "../../../App";
 import { EWikiStates, useWikiData } from "../WikiContext";
 import { IDisplay } from "../WikiEntryDisplay";
 import Description from "./DisplayComponents/Description";
-import SkillsList from "./DisplayComponents/SkillsList";
+import RelatedLinks from "./DisplayComponents/RelatedLinks";
 
 interface IAbilityScore extends IDisplay {
   full_name: string;
@@ -20,7 +20,7 @@ const DisplayAbility: React.FC = () => {
       <CardHeader title={entryData.full_name}></CardHeader>
       <CardContent>
         <Description desc={entryData.desc}></Description>
-        <SkillsList skills={entryData.skills}></SkillsList>
+        <RelatedLinks relatedLinks={entryData.skills}></RelatedLinks>
       </CardContent>
     </Card>
   );

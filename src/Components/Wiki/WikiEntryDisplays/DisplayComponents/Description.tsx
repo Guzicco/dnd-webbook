@@ -9,11 +9,9 @@ const Description: React.FC<IProps> = ({ desc }) => {
   return (
     <Paper sx={{ p: 2 }}>
       <Typography variant="h5">Description</Typography>
-      {desc ? (
-        desc.map((part, index) => <Typography key={index}>{part}</Typography>)
-      ) : (
-        <></>
-      )}
+      {desc.map((part, index) => (
+        <Typography key={index}>{part}</Typography>
+      ))}
     </Paper>
   );
 };

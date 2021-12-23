@@ -3,34 +3,31 @@ import React from "react";
 import { ILink } from "../../../../App";
 import { useWikiDataHandler } from "../../WikiContext";
 
-interface ISkillsListProps {
-  skills: ILink[];
+interface IRelatedLinksProps {
+  relatedLinks: ILink[];
 }
 
-const SkillsList: React.FC<ISkillsListProps> = ({ skills }) => {
+const RelatedLinks: React.FC<IRelatedLinksProps> = ({ relatedLinks }) => {
   const wikiDataHandler = useWikiDataHandler();
-
-  return skills.length !== 0 ? (
+  return (
     <Paper sx={{ p: 2, mt: 2 }}>
       <Typography variant="h5">Skills</Typography>
       <List>
-        {skills.map((skill) => (
-          <ListItem key={skill.index}>
+        {relatedLinks.map((link) => (
+          <ListItem key={link.index}>
             <Link
               underline="hover"
               onClick={() => {
-                wikiDataHandler.onInItemLinkClick(skill.url);
+                wikiDataHandler.onInItemLinkClick(link.url);
               }}
             >
-              {skill.name}
+              {link.name}
             </Link>
           </ListItem>
         ))}
       </List>
     </Paper>
-  ) : (
-    <></>
   );
 };
 
-export default SkillsList;
+export default RelatedLinks;
