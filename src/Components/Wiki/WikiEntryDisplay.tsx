@@ -5,6 +5,8 @@ import { EWikiStates, IState, useWikiData } from "./WikiContext";
 import DisplayAbility from "./WikiEntryDisplays/DisplayAbility";
 import DisplayAlignments from "./WikiEntryDisplays/DisplayAlignments";
 import DisplayBackgrounds from "./WikiEntryDisplays/DisplayBackgrounds";
+import DisplayEquipment from "./WikiEntryDisplays/DisplayEquipment";
+import DisplayEquipmentCategories from "./WikiEntryDisplays/DisplayEquipmentCategories";
 import DisplaySkills from "./WikiEntryDisplays/DisplaySkills";
 
 export enum EWikiEntryType {
@@ -56,6 +58,13 @@ const WikiEntryDisplay = () => {
         case EWikiEntryType["backgrounds"]: {
           return <DisplayBackgrounds></DisplayBackgrounds>;
         }
+        case EWikiEntryType["equipment"]: {
+          return <DisplayEquipment></DisplayEquipment>;
+        }
+        case EWikiEntryType["equipment-categories"]: {
+          return <DisplayEquipmentCategories></DisplayEquipmentCategories>;
+        }
+
         default:
           return <div>not yet implemented</div>;
       }
