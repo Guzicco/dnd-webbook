@@ -1,6 +1,6 @@
 import { Box, CardHeader, List, ListItem, Tab } from "@mui/material";
 import { TabContext, TabList, TabPanel } from "@mui/lab";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { ILink } from "../../../App";
 import { EWikiStates, useWikiData } from "../WikiContext";
 
@@ -9,26 +9,34 @@ interface EQCategories extends ILink {
 }
 
 const DisplayEquipmentCategories: React.FC = () => {
-  const [tabValue, setTabValue] = useState<string>("1");
+  const [tabValue, setTabValue] = useState<string>("A");
+  const [filteredEquipment, setFilteredEquipment] = useState<ILink[]>([]);
   const wikiData = useWikiData();
   const entryData: EQCategories =
     wikiData.type === EWikiStates.ITEM_PICKED ? wikiData.state.itemPicked : {};
   console.log(entryData);
 
-  const handleTabChange = (event: React.SyntheticEvent, newValue: string) => {
-    setTabValue(newValue);
-  };
   const sortAlphabetUniqueLetters = (list: ILink[]) => {
     let uniqueLetters = new Set<string>();
     list.map((item) => uniqueLetters.add(item.name.charAt(0)));
     return Array.from(uniqueLetters).sort();
   };
-  const uniqueLetters = sortAlphabetUniqueLetters(entryData.equipment);
-  const filteredEquipment = entryData.equipment.filter(
-    (item) => item.name.charAt(0) === tabValue
-  );
-  console.log(filteredEquipment);
 
+  const uniqueLetters = sortAlphabetUniqueLetters(entryData.equipment);
+
+  useEffect(() => {
+    setTabValue(uniqueLetters[0]);
+  }, [entryData.equipment]);
+
+  useEffect(() => {
+    setFilteredEquipment(
+      entryData.equipment.filter((item) => item.name.charAt(0) === tabValue)
+    );
+  }, [tabValue]);
+
+  const handleTabChange = (event: React.SyntheticEvent, newValue: string) => {
+    setTabValue(newValue);
+  };
   return (
     <>
       <CardHeader title={entryData.name}></CardHeader>
