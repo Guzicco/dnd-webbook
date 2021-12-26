@@ -6,6 +6,8 @@ import ChooseOptions, {
   IChooseOption,
 } from "./DisplayComponents/ChooseOptions";
 import Description from "./DisplayComponents/Description";
+import EquipmentList, { Equipment } from "./DisplayComponents/EquipmentList";
+import MultiChoice from "./DisplayComponents/MultiChoice";
 import RelatedLinks from "./DisplayComponents/RelatedLinks";
 
 interface IBackgrounds extends IDisplay {
@@ -15,7 +17,7 @@ interface IBackgrounds extends IDisplay {
   ideals: IChooseOption;
   language_options: IChooseOption;
   personality_traits: IChooseOption;
-  starting_equipment: { equipment: ILink; quantity: number }[];
+  starting_equipment: Equipment[];
   starting_equipment_options: IChooseOption[];
   starting_proficiencies: ILink[];
 }
@@ -34,10 +36,17 @@ const DisplayBackgrounds: React.FC = () => {
         />
         <ChooseOptions chooseList={entryData.bonds} />
         <ChooseOptions chooseList={entryData.ideals} />
-        {/* <ChooseOptions chooseList={entryData.starting_equipment_options} /> */}
+        <ChooseOptions chooseList={entryData.personality_traits} />
         <ChooseOptions chooseList={entryData.flaws} />
         <ChooseOptions chooseList={entryData.language_options} />
-        <ChooseOptions chooseList={entryData.personality_traits} />
+        <EquipmentList
+          title={"Starting Equipment"}
+          equipmentList={entryData.starting_equipment}
+        />
+        <MultiChoice
+          title={"Starting Equipment Options"}
+          list={entryData.starting_equipment_options}
+        />
         <RelatedLinks
           relatedLinks={entryData.starting_proficiencies}
         ></RelatedLinks>

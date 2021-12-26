@@ -8,16 +8,16 @@ interface IDescriptionProps {
 
 const Description: React.FC<IDescriptionProps> = ({ desc, name }) => {
   return (
-    <Paper sx={{ p: 2 }}>
+    <Paper sx={{ p: 2, mt: 1 }}>
       <Typography variant="h5">Description</Typography>
       {Array.isArray(desc) ? (
         desc.map((part, index) => (
-          <Typography sx={{ pt: 1 }} key={index}>
+          <Typography paragraph key={index}>
             {part}
           </Typography>
         ))
       ) : (
-        <Typography>{desc}</Typography>
+        <Typography paragraph>{desc}</Typography>
       )}
       {name ? (
         <Typography sx={{ pt: 1 }} variant="h6">
