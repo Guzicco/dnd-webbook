@@ -4,20 +4,25 @@ import TrimString from "../../Utils/TrimString";
 import { EWikiStates, useWikiData, useWikiDataHandler } from "./WikiContext";
 import { ILink } from "../../App";
 
-const SubCategories = () => {
+const WikiEntriesList = () => {
   const wikiData = useWikiData();
   const wikiDataHanlder = useWikiDataHandler();
-  const [currentPage, setCurrentPage] = useState<number>(0);
+  const [currentPage, setCurrentPage] = useState<number>(1);
   const [displayedItems, setDisplayedItems] = useState<ILink[]>([]);
-
+  const [paginationLength, setPaginationLength] = useState<number>(0);
   const itemsPerPage = 15;
-  const paginationLength =
-    wikiData.type === EWikiStates.CATEGORY_PICKED ||
-    wikiData.type === EWikiStates.ITEM_PICKED
-      ? Math.ceil(
-          wikiData.state.categoryPicked.itemsList.length / itemsPerPage - 1
-        )
-      : 0;
+
+  useEffect(() => {
+    const pagination =
+      wikiData.type === EWikiStates.CATEGORY_PICKED ||
+      wikiData.type === EWikiStates.ITEM_PICKED
+        ? Math.ceil(
+            wikiData.state.categoryPicked.itemsList.length / itemsPerPage - 1
+          )
+        : 0;
+    setCurrentPage(1);
+    setPaginationLength(pagination);
+  }, [wikiData]);
 
   useEffect(() => {
     const toDisplay =
@@ -27,7 +32,7 @@ const SubCategories = () => {
           ? wikiData.state.categoryPicked.itemsList
           : wikiData.state.categoryPicked.itemsList.slice(
               (currentPage - 1) * itemsPerPage,
-              itemsPerPage * currentPage - 1
+              currentPage * itemsPerPage
             )
         : [];
     setDisplayedItems(toDisplay);
@@ -40,6 +45,7 @@ const SubCategories = () => {
           <Pagination
             sx={{ mt: 2, mx: "auto" }}
             count={paginationLength + 1}
+            page={currentPage}
             size="small"
             hideNextButton={true}
             hidePrevButton={true}
@@ -73,4 +79,4 @@ const SubCategories = () => {
   );
 };
 
-export default SubCategories;
+export default WikiEntriesList;
