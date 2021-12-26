@@ -7,22 +7,36 @@ import { ILink } from "../../App";
 const WikiEntriesList = () => {
   const wikiData = useWikiData();
   const wikiDataHanlder = useWikiDataHandler();
+  const [activeCategory, setActiveCategory] = useState<{
+    type: number;
+    url: string;
+    itemsList: ILink[];
+  }>({
+    type: 0,
+    url: "",
+    itemsList: [],
+  });
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [displayedItems, setDisplayedItems] = useState<ILink[]>([]);
   const [paginationLength, setPaginationLength] = useState<number>(0);
   const itemsPerPage = 15;
 
   useEffect(() => {
-    const pagination =
+    if (
       wikiData.type === EWikiStates.CATEGORY_PICKED ||
       wikiData.type === EWikiStates.ITEM_PICKED
-        ? Math.ceil(
-            wikiData.state.categoryPicked.itemsList.length / itemsPerPage - 1
-          )
-        : 0;
+    ) {
+      setActiveCategory(wikiData.state.categoryPicked);
+    }
+  });
+
+  useEffect(() => {
+    const pagination = Math.ceil(
+      activeCategory.itemsList.length / itemsPerPage - 1
+    );
     setCurrentPage(1);
     setPaginationLength(pagination);
-  }, [wikiData]);
+  }, [activeCategory]);
 
   useEffect(() => {
     const toDisplay =
