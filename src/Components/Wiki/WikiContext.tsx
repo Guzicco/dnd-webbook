@@ -1,7 +1,7 @@
 import React, { createContext, useState, useContext, useEffect } from "react";
 import { API_URL } from "../../Globals";
 import Axios from "axios";
-import { ILink } from "../../App";
+import { IGenericLink, ILink } from "../../App";
 import FixURL from "../../Utils/FixURL";
 import { EWikiEntryType } from "./WikiEntryDisplay";
 
@@ -31,27 +31,29 @@ export enum EWikiStates {
   ITEM_PICKED = "ITEM_PICKED",
 }
 
+type ICategoryLink = IGenericLink<EWikiEntryType>;
+
 export type IState =
   | { type: EWikiStates.INITIAL }
   | { type: EWikiStates.LOADING }
   | {
       type: EWikiStates.LOADED;
-      categoriesList: ILink[];
+      categoriesList: ICategoryLink[];
     }
   | {
       type: EWikiStates.CATEGORY_PICKED;
-      categoriesList: ILink[];
+      categoriesList: ICategoryLink[];
       categoryPicked: {
-        type: number;
+        type: EWikiEntryType;
         url: string;
         itemsList: ILink[];
       };
     }
   | {
       type: EWikiStates.ITEM_PICKED;
-      categoriesList: ILink[];
+      categoriesList: ICategoryLink[];
       categoryPicked: {
-        type: number;
+        type: EWikiEntryType;
         url: string;
         itemsList: ILink[];
       };
@@ -67,7 +69,7 @@ export const useWikiData = () => {
 export type IHandler = {
   onCategoryPick: (
     pickedCategoryURL: string,
-    pickedCategoryLabel: string
+    pickedCategoryLabel: EWikiEntryType
   ) => void;
   onItemPick: (pickedItemURL: string) => void;
   onInItemLinkClick: (inItemURL: string) => void;
@@ -97,13 +99,14 @@ export const WikiDataProvider = ({
   const fetchInitialData = async () => {
     setWikiState({ type: EWikiStates.LOADING });
     try {
-      const initialData: ILink[] = await Axios.get(`${API_URL}/api`).then(
-        (response) => {
-          return Object.keys(response.data).map((key) => {
-            return { name: key as string, url: response.data[key] as string };
-          });
-        }
-      );
+      const initialData: ICategoryLink[] = await Axios.get(
+        `${API_URL}/api`
+      ).then((response) => {
+        return Object.keys(response.data).map((key) => {
+          // TODO - verify if key is of type EWikiEntryType
+          return { name: key as EWikiEntryType, url: response.data[key] };
+        });
+      });
       setWikiState({
         type: EWikiStates.LOADED,
         categoriesList: initialData,
@@ -118,7 +121,7 @@ export const WikiDataProvider = ({
 
   const handleCategoryPick = async (
     pickedCategoryURL: string,
-    pickedCategoryLabel: string
+    pickedCategoryLabel: EWikiEntryType
   ) => {
     try {
       const pickedCategoryData = await Axios.request<ILink[]>({
@@ -137,9 +140,7 @@ export const WikiDataProvider = ({
         type: EWikiStates.CATEGORY_PICKED,
         categoriesList: wikiState.categoriesList,
         categoryPicked: {
-          type: EWikiEntryType[
-            pickedCategoryLabel as keyof typeof EWikiEntryType
-          ],
+          type: pickedCategoryLabel,
           url: pickedCategoryURL,
           itemsList: pickedCategoryData,
         },
@@ -178,7 +179,10 @@ export const WikiDataProvider = ({
   ) => {
     const fixedURL = FixURL(inItemURL);
     const categoryURL = fixedURL.slice(0, fixedURL.lastIndexOf("/"));
-    const categoryName = categoryURL.slice(categoryURL.lastIndexOf("/") + 1);
+    const categoryName = categoryURL.slice(
+      categoryURL.lastIndexOf("/") + 1
+    ) as EWikiEntryType;
+    // check if categoryName is EWikiEntryType
     try {
       const entryData = await Axios.get(`${API_URL}${FixURL(inItemURL)}`).then(
         (response) => response.data
@@ -203,7 +207,7 @@ export const WikiDataProvider = ({
         type: EWikiStates.ITEM_PICKED,
         categoriesList: wikiState.categoriesList,
         categoryPicked: {
-          type: EWikiEntryType[categoryName as keyof typeof EWikiEntryType],
+          type: categoryName,
           url: `${categoryURL}`,
           itemsList: formattedCategoryData,
         },

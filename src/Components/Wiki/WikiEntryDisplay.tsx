@@ -9,7 +9,7 @@ import DisplayEquipment from "./WikiEntryDisplays/DisplayEquipment";
 import DisplayEquipmentCategories from "./WikiEntryDisplays/DisplayEquipmentCategories";
 import DisplaySkills from "./WikiEntryDisplays/DisplaySkills";
 
-export enum EWikiEntryType {
+export const EWikiEntryTypes = [
   "ability-scores",
   "alignments",
   "backgrounds",
@@ -34,7 +34,9 @@ export enum EWikiEntryType {
   "subraces",
   "traits",
   "weapon-properties",
-}
+] as const;
+
+export type EWikiEntryType = typeof EWikiEntryTypes[number];
 
 export interface IDisplay extends ILink {
   desc: string[] | string;
@@ -46,22 +48,22 @@ const WikiEntryDisplay = () => {
   const EntryDisplayed = (data: IState) => {
     if (data.type === EWikiStates.ITEM_PICKED) {
       switch (data.categoryPicked.type) {
-        case EWikiEntryType["ability-scores"]: {
+        case "ability-scores": {
           return <DisplayAbility></DisplayAbility>;
         }
-        case EWikiEntryType["alignments"]: {
+        case "alignments": {
           return <DisplayAlignments></DisplayAlignments>;
         }
-        case EWikiEntryType["skills"]: {
+        case "skills": {
           return <DisplaySkills></DisplaySkills>;
         }
-        case EWikiEntryType["backgrounds"]: {
+        case "backgrounds": {
           return <DisplayBackgrounds></DisplayBackgrounds>;
         }
-        case EWikiEntryType["equipment"]: {
+        case "equipment": {
           return <DisplayEquipment></DisplayEquipment>;
         }
-        case EWikiEntryType["equipment-categories"]: {
+        case "equipment-categories": {
           return <DisplayEquipmentCategories></DisplayEquipmentCategories>;
         }
 
