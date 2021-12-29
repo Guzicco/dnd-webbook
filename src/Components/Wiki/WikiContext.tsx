@@ -5,14 +5,42 @@ import { ILink } from "../../App";
 import FixURL from "../../Utils/FixURL";
 import { EWikiEntryType } from "./WikiEntryDisplay";
 
+// TODO: move to type utils
+export type StateMember<TType extends string> = {
+  type: TType;
+};
+
+export function assertState<TType extends string>(
+  state: { type: string },
+  ...expectedTypes: TType[]
+): asserts state is StateMember<TType> {
+  if (!expectedTypes.includes(state.type as TType)) {
+    throw new Error(
+      `Invalid state ${state.type} (expected one of: ${expectedTypes})`
+    );
+  }
+}
+// end utils
+
 // Context/Data structure
 export enum EWikiStates {
-  INITIAL,
-  LOADING,
-  LOADED,
-  CATEGORY_PICKED,
-  ITEM_PICKED,
+  INITIAL = "INITIAL",
+  LOADING = "LOADING",
+  LOADED = "LOADED",
+  CATEGORY_PICKED = "CATEGORY_PICKED",
+  ITEM_PICKED = "ITEM_PICKED",
 }
+
+const CATEGORY_PICKING_STATES = new Set([
+  EWikiStates.LOADED,
+  EWikiStates.CATEGORY_PICKED,
+  EWikiStates.ITEM_PICKED,
+]);
+
+const ITEM_PICKING_STATES = new Set([
+  EWikiStates.CATEGORY_PICKED,
+  EWikiStates.ITEM_PICKED,
+]);
 
 export type IState =
   | { type: EWikiStates.INITIAL }
@@ -114,25 +142,27 @@ export const WikiDataProvider = ({
         url: `${API_URL}${pickedCategoryURL}`,
         transformResponse: [(data) => JSON.parse(data).results],
       }).then((response) => response.data.map((entry) => entry));
-      if (
-        wikiState.type === EWikiStates.LOADED ||
-        wikiState.type === EWikiStates.CATEGORY_PICKED ||
-        wikiState.type === EWikiStates.ITEM_PICKED
-      ) {
-        setWikiState({
-          type: EWikiStates.CATEGORY_PICKED,
-          state: {
-            categoriesList: wikiState.state.categoriesList,
-            categoryPicked: {
-              type: EWikiEntryType[
-                pickedCategoryLabel as keyof typeof EWikiEntryType
-              ],
-              url: pickedCategoryURL,
-              itemsList: pickedCategoryData,
-            },
+
+      assertState(
+        wikiState,
+        EWikiStates.LOADED,
+        EWikiStates.CATEGORY_PICKED,
+        EWikiStates.ITEM_PICKED
+      );
+
+      setWikiState({
+        type: EWikiStates.CATEGORY_PICKED,
+        state: {
+          categoriesList: wikiState.state.categoriesList,
+          categoryPicked: {
+            type: EWikiEntryType[
+              pickedCategoryLabel as keyof typeof EWikiEntryType
+            ],
+            url: pickedCategoryURL,
+            itemsList: pickedCategoryData,
           },
-        });
-      }
+        },
+      });
     } catch (err) {
       console.log(err);
     }
@@ -145,19 +175,21 @@ export const WikiDataProvider = ({
       const entryData = await Axios.get(
         `${API_URL}${FixURL(pickedItemURL)}`
       ).then((response) => response.data);
-      if (
-        wikiState.type === EWikiStates.CATEGORY_PICKED ||
-        wikiState.type === EWikiStates.ITEM_PICKED
-      ) {
-        setWikiState({
-          type: EWikiStates.ITEM_PICKED,
-          state: {
-            categoriesList: wikiState.state.categoriesList,
-            categoryPicked: wikiState.state.categoryPicked,
-            itemPicked: entryData,
-          },
-        });
-      }
+
+      assertState(
+        wikiState,
+        EWikiStates.CATEGORY_PICKED,
+        EWikiStates.ITEM_PICKED
+      );
+
+      setWikiState({
+        type: EWikiStates.ITEM_PICKED,
+        state: {
+          categoriesList: wikiState.state.categoriesList,
+          categoryPicked: wikiState.state.categoryPicked,
+          itemPicked: entryData,
+        },
+      });
     } catch (err) {
       console.log(err);
     }
@@ -187,20 +219,19 @@ export const WikiDataProvider = ({
           index: entry.index,
         };
       });
-      if (wikiState.type === EWikiStates.ITEM_PICKED) {
-        setWikiState({
-          type: EWikiStates.ITEM_PICKED,
-          state: {
-            categoriesList: wikiState.state.categoriesList,
-            categoryPicked: {
-              type: EWikiEntryType[categoryName as keyof typeof EWikiEntryType],
-              url: `${categoryURL}`,
-              itemsList: formattedCategoryData,
-            },
-            itemPicked: entryData,
+      assertState(wikiState, EWikiStates.ITEM_PICKED);
+      setWikiState({
+        type: EWikiStates.ITEM_PICKED,
+        state: {
+          categoriesList: wikiState.state.categoriesList,
+          categoryPicked: {
+            type: EWikiEntryType[categoryName as keyof typeof EWikiEntryType],
+            url: `${categoryURL}`,
+            itemsList: formattedCategoryData,
           },
-        });
-      }
+          itemPicked: entryData,
+        },
+      });
     } catch (err) {
       console.log(err);
     }
