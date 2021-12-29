@@ -3,16 +3,17 @@ import React, { useEffect, useState } from "react";
 import TrimString from "../../Utils/TrimString";
 import { EWikiStates, useWikiData, useWikiDataHandler } from "./WikiContext";
 import { ILink } from "../../App";
+import { EWikiEntryType } from "./WikiEntryDisplay";
 
 const WikiEntriesList = () => {
   const wikiData = useWikiData();
   const wikiDataHanlder = useWikiDataHandler();
   const [activeCategory, setActiveCategory] = useState<{
-    type: number;
+    type: EWikiEntryType;
     url: string;
     itemsList: ILink[];
   }>({
-    type: 0,
+    type: "ability-scores",
     url: "",
     itemsList: [],
   });
@@ -64,7 +65,7 @@ const WikiEntriesList = () => {
             size="small"
             hideNextButton={true}
             hidePrevButton={true}
-            onChange={(event: React.ChangeEvent<any>, page: number) => {
+            onChange={(event, page) => {
               setCurrentPage(page);
             }}
           />
@@ -79,10 +80,7 @@ const WikiEntriesList = () => {
               <Button
                 variant="contained"
                 fullWidth
-                data-url={category.url}
-                onClick={(event: any) =>
-                  wikiDataHanlder.onItemPick(event.target.dataset.url)
-                }
+                onClick={() => wikiDataHanlder.onItemPick(category.url)}
               >
                 {TrimString(category.name)}
               </Button>
