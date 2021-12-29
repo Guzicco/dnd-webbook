@@ -28,7 +28,8 @@ const WikiEntriesList = () => {
     ) {
       setActiveCategory(wikiData.state.categoryPicked);
     }
-  });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   useEffect(() => {
     const pagination = Math.ceil(

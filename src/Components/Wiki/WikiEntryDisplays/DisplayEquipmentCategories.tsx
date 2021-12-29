@@ -26,12 +26,14 @@ const DisplayEquipmentCategories: React.FC = () => {
 
   useEffect(() => {
     setTabValue(uniqueLetters[0]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [entryData.equipment]);
 
   useEffect(() => {
     setFilteredEquipment(
       entryData.equipment.filter((item) => item.name.charAt(0) === tabValue)
     );
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [tabValue]);
 
   const handleTabChange = (event: React.SyntheticEvent, newValue: string) => {
