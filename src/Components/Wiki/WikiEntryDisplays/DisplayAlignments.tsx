@@ -10,7 +10,7 @@ interface IAlignments extends IDisplay {
 const DisplayAlignments: React.FC = () => {
   const wikiData = useWikiData();
   const entryData: IAlignments =
-    wikiData.type === EWikiStates.ITEM_PICKED ? wikiData.state.itemPicked : {};
+    wikiData.type === EWikiStates.ITEM_PICKED ? wikiData.itemPicked : {};
   return (
     <>
       <CardHeader

@@ -13,7 +13,7 @@ const DisplayEquipmentCategories: React.FC = () => {
   const [filteredEquipment, setFilteredEquipment] = useState<ILink[]>([]);
   const wikiData = useWikiData();
   const entryData: EQCategories =
-    wikiData.type === EWikiStates.ITEM_PICKED ? wikiData.state.itemPicked : {};
+    wikiData.type === EWikiStates.ITEM_PICKED ? wikiData.itemPicked : {};
   console.log(entryData);
 
   const sortAlphabetUniqueLetters = (list: ILink[]) => {

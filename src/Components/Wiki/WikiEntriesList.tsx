@@ -26,7 +26,7 @@ const WikiEntriesList = () => {
       wikiData.type === EWikiStates.CATEGORY_PICKED ||
       wikiData.type === EWikiStates.ITEM_PICKED
     ) {
-      setActiveCategory(wikiData.state.categoryPicked);
+      setActiveCategory(wikiData.categoryPicked);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -43,9 +43,9 @@ const WikiEntriesList = () => {
     const toDisplay =
       wikiData.type === EWikiStates.CATEGORY_PICKED ||
       wikiData.type === EWikiStates.ITEM_PICKED
-        ? wikiData.state.categoryPicked.itemsList.length === 1
-          ? wikiData.state.categoryPicked.itemsList
-          : wikiData.state.categoryPicked.itemsList.slice(
+        ? wikiData.categoryPicked.itemsList.length === 1
+          ? wikiData.categoryPicked.itemsList
+          : wikiData.categoryPicked.itemsList.slice(
               (currentPage - 1) * itemsPerPage,
               currentPage * itemsPerPage
             )

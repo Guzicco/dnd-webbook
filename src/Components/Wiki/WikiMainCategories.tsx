@@ -15,7 +15,7 @@ const MainCategories: React.FC<Props> = () => {
       {wikiData.type === EWikiStates.LOADED ||
       wikiData.type === EWikiStates.CATEGORY_PICKED ||
       wikiData.type === EWikiStates.ITEM_PICKED
-        ? wikiData.state.categoriesList.map((category: ILink) => {
+        ? wikiData.categoriesList.map((category: ILink) => {
             return (
               <ListItem key={category.name}>
                 <Button

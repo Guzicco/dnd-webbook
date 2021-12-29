@@ -24,7 +24,7 @@ interface IBackgrounds extends IDisplay {
 const DisplayBackgrounds: React.FC = () => {
   const wikiData = useWikiData();
   const entryData: IBackgrounds =
-    wikiData.type === EWikiStates.ITEM_PICKED ? wikiData.state.itemPicked : {};
+    wikiData.type === EWikiStates.ITEM_PICKED ? wikiData.itemPicked : {};
   console.log(entryData);
   return (
     <>

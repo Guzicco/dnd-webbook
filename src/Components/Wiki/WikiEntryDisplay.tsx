@@ -45,7 +45,7 @@ const WikiEntryDisplay = () => {
 
   const EntryDisplayed = (data: IState) => {
     if (data.type === EWikiStates.ITEM_PICKED) {
-      switch (data.state.categoryPicked.type) {
+      switch (data.categoryPicked.type) {
         case EWikiEntryType["ability-scores"]: {
           return <DisplayAbility></DisplayAbility>;
         }

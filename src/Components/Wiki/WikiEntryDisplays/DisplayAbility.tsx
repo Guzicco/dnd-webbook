@@ -14,7 +14,7 @@ interface IAbilityScore extends IDisplay {
 const DisplayAbility: React.FC = () => {
   const wikiData = useWikiData();
   const entryData: IAbilityScore =
-    wikiData.type === EWikiStates.ITEM_PICKED ? wikiData.state.itemPicked : {};
+    wikiData.type === EWikiStates.ITEM_PICKED ? wikiData.itemPicked : {};
   return (
     <>
       <CardHeader title={entryData.full_name}></CardHeader>

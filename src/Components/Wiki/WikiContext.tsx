@@ -31,48 +31,31 @@ export enum EWikiStates {
   ITEM_PICKED = "ITEM_PICKED",
 }
 
-const CATEGORY_PICKING_STATES = new Set([
-  EWikiStates.LOADED,
-  EWikiStates.CATEGORY_PICKED,
-  EWikiStates.ITEM_PICKED,
-]);
-
-const ITEM_PICKING_STATES = new Set([
-  EWikiStates.CATEGORY_PICKED,
-  EWikiStates.ITEM_PICKED,
-]);
-
 export type IState =
   | { type: EWikiStates.INITIAL }
   | { type: EWikiStates.LOADING }
   | {
       type: EWikiStates.LOADED;
-      state: {
-        categoriesList: ILink[];
-      };
+      categoriesList: ILink[];
     }
   | {
       type: EWikiStates.CATEGORY_PICKED;
-      state: {
-        categoriesList: ILink[];
-        categoryPicked: {
-          type: number;
-          url: string;
-          itemsList: ILink[];
-        };
+      categoriesList: ILink[];
+      categoryPicked: {
+        type: number;
+        url: string;
+        itemsList: ILink[];
       };
     }
   | {
       type: EWikiStates.ITEM_PICKED;
-      state: {
-        categoriesList: ILink[];
-        categoryPicked: {
-          type: number;
-          url: string;
-          itemsList: ILink[];
-        };
-        itemPicked: any; //logic is handled in WikiEntryDisplay
+      categoriesList: ILink[];
+      categoryPicked: {
+        type: number;
+        url: string;
+        itemsList: ILink[];
       };
+      itemPicked: any; //logic is handled in WikiEntryDisplay
     };
 
 const WikiDataContext = createContext<IState>({ type: EWikiStates.INITIAL });
@@ -123,7 +106,7 @@ export const WikiDataProvider = ({
       );
       setWikiState({
         type: EWikiStates.LOADED,
-        state: { categoriesList: initialData },
+        categoriesList: initialData,
       });
     } catch (err) {
       console.log(err);
@@ -152,15 +135,13 @@ export const WikiDataProvider = ({
 
       setWikiState({
         type: EWikiStates.CATEGORY_PICKED,
-        state: {
-          categoriesList: wikiState.state.categoriesList,
-          categoryPicked: {
-            type: EWikiEntryType[
-              pickedCategoryLabel as keyof typeof EWikiEntryType
-            ],
-            url: pickedCategoryURL,
-            itemsList: pickedCategoryData,
-          },
+        categoriesList: wikiState.categoriesList,
+        categoryPicked: {
+          type: EWikiEntryType[
+            pickedCategoryLabel as keyof typeof EWikiEntryType
+          ],
+          url: pickedCategoryURL,
+          itemsList: pickedCategoryData,
         },
       });
     } catch (err) {
@@ -184,11 +165,9 @@ export const WikiDataProvider = ({
 
       setWikiState({
         type: EWikiStates.ITEM_PICKED,
-        state: {
-          categoriesList: wikiState.state.categoriesList,
-          categoryPicked: wikiState.state.categoryPicked,
-          itemPicked: entryData,
-        },
+        categoriesList: wikiState.categoriesList,
+        categoryPicked: wikiState.categoryPicked,
+        itemPicked: entryData,
       });
     } catch (err) {
       console.log(err);
@@ -222,15 +201,13 @@ export const WikiDataProvider = ({
       assertState(wikiState, EWikiStates.ITEM_PICKED);
       setWikiState({
         type: EWikiStates.ITEM_PICKED,
-        state: {
-          categoriesList: wikiState.state.categoriesList,
-          categoryPicked: {
-            type: EWikiEntryType[categoryName as keyof typeof EWikiEntryType],
-            url: `${categoryURL}`,
-            itemsList: formattedCategoryData,
-          },
-          itemPicked: entryData,
+        categoriesList: wikiState.categoriesList,
+        categoryPicked: {
+          type: EWikiEntryType[categoryName as keyof typeof EWikiEntryType],
+          url: `${categoryURL}`,
+          itemsList: formattedCategoryData,
         },
+        itemPicked: entryData,
       });
     } catch (err) {
       console.log(err);

@@ -12,7 +12,7 @@ interface ISkills extends IDisplay {
 const DisplaySkills: React.FC = () => {
   const wikiData = useWikiData();
   const entryData: ISkills =
-    wikiData.type === EWikiStates.ITEM_PICKED ? wikiData.state.itemPicked : {};
+    wikiData.type === EWikiStates.ITEM_PICKED ? wikiData.itemPicked : {};
   console.log(entryData);
   return (
     <>
