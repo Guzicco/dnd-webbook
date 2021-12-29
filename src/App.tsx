@@ -4,6 +4,7 @@ import { BrowserRouter as Router } from "react-router-dom";
 import NavigationBar from "./Components/NavigationBar";
 import Wiki from "./Components/Wiki/Wiki";
 import { WikiDataProvider } from "./Components/Wiki/WikiContext";
+import { EWikiEntryType } from "./Components/Wiki/WikiEntryDisplay";
 
 export type IRouteName = "about" | "wiki" | "characters" | "diceSimulator";
 export interface ILink {
@@ -11,6 +12,18 @@ export interface ILink {
   name: string;
   index?: string;
 }
+export interface ICategoryLinkLink {
+  url: string;
+  name: EWikiEntryType;
+  index?: string;
+}
+
+export interface IGenericLink<NameType = String> {
+  url: string;
+  name: NameType;
+  index?: string;
+}
+
 const routes: { [key in IRouteName]: ILink } = {
   about: {
     name: "About",
