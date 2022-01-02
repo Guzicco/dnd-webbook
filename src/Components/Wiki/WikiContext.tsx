@@ -4,23 +4,7 @@ import Axios from "axios";
 import { IGenericLink, ILink } from "../../App";
 import FixURL from "../../Utils/FixURL";
 import { EWikiEntryType } from "./WikiEntryDisplay";
-
-// TODO: move to type utils
-export type StateMember<TType extends string> = {
-  type: TType;
-};
-
-export function assertState<TType extends string>(
-  state: { type: string },
-  ...expectedTypes: TType[]
-): asserts state is StateMember<TType> {
-  if (!expectedTypes.includes(state.type as TType)) {
-    throw new Error(
-      `Invalid state ${state.type} (expected one of: ${expectedTypes})`
-    );
-  }
-}
-// end utils
+import { assertState } from "../../Utils/AssertState";
 
 // Context/Data structure
 export enum EWikiStates {
