@@ -12,22 +12,24 @@ const Wiki: React.FC<Props> = () => {
   const wikiData = useWikiData();
 
   const displayWikiEntriesList = () => {
-    assertState(
-      wikiData,
-      EWikiStates.LOADED,
-      EWikiStates.CATEGORY_PICKED,
-      EWikiStates.ITEM_PICKED
-    );
-    return <WikiEntriesList />;
+    try {
+      assertState(
+        wikiData,
+        EWikiStates.CATEGORY_PICKED,
+        EWikiStates.ITEM_PICKED
+      );
+      return <WikiEntriesList />;
+    } catch {
+      return <></>;
+    }
   };
   const displayWikiEntryDisplay = () => {
-    assertState(
-      wikiData,
-      EWikiStates.LOADED,
-      EWikiStates.CATEGORY_PICKED,
-      EWikiStates.ITEM_PICKED
-    );
-    return <WikiEntryDisplay />;
+    try {
+      assertState(wikiData, EWikiStates.ITEM_PICKED);
+      return <WikiEntryDisplay />;
+    } catch {
+      return <></>;
+    }
   };
 
   return (
