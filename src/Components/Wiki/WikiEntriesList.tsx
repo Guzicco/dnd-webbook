@@ -4,6 +4,7 @@ import TrimString from "../../Utils/TrimString";
 import { EWikiStates, useWikiData, useWikiDataHandler } from "./WikiContext";
 import { ILink } from "../../App";
 import { EWikiEntryType } from "./WikiEntryDisplay";
+import { assertState } from "../../Utils/AssertState";
 
 const WikiEntriesList = () => {
   const wikiData = useWikiData();
@@ -22,15 +23,10 @@ const WikiEntriesList = () => {
   const [paginationLength, setPaginationLength] = useState<number>(0);
   const itemsPerPage = 15;
 
+  assertState(wikiData, EWikiStates.CATEGORY_PICKED, EWikiStates.ITEM_PICKED);
   useEffect(() => {
-    if (
-      wikiData.type === EWikiStates.CATEGORY_PICKED ||
-      wikiData.type === EWikiStates.ITEM_PICKED
-    ) {
-      setActiveCategory(wikiData.categoryPicked);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+    setActiveCategory(wikiData.categoryPicked);
+  }, [wikiData.categoryPicked]);
 
   useEffect(() => {
     const pagination = Math.ceil(
@@ -42,15 +38,12 @@ const WikiEntriesList = () => {
 
   useEffect(() => {
     const toDisplay =
-      wikiData.type === EWikiStates.CATEGORY_PICKED ||
-      wikiData.type === EWikiStates.ITEM_PICKED
-        ? wikiData.categoryPicked.itemsList.length === 1
-          ? wikiData.categoryPicked.itemsList
-          : wikiData.categoryPicked.itemsList.slice(
-              (currentPage - 1) * itemsPerPage,
-              currentPage * itemsPerPage
-            )
-        : [];
+      wikiData.categoryPicked.itemsList.length === 1
+        ? wikiData.categoryPicked.itemsList
+        : wikiData.categoryPicked.itemsList.slice(
+            (currentPage - 1) * itemsPerPage,
+            currentPage * itemsPerPage
+          );
     setDisplayedItems(toDisplay);
   }, [wikiData, currentPage]);
 
