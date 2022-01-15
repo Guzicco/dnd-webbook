@@ -1,4 +1,4 @@
-import { Card } from "@mui/material";
+import { Card, Typography } from "@mui/material";
 import React from "react";
 import { ILink } from "../../App";
 import { EWikiStates, IState, useWikiData } from "./WikiContext";
@@ -68,7 +68,11 @@ const WikiEntryDisplay = () => {
         }
 
         default:
-          return <div>not yet implemented</div>;
+          return (
+            <Typography sx={{ p: 2 }} variant={"h5"}>
+              not yet implemented
+            </Typography>
+          );
       }
     }
   };
