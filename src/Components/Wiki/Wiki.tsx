@@ -1,5 +1,7 @@
 import { Grid } from "@mui/material";
 import React from "react";
+import { assertState } from "../../Utils/AssertState";
+import { EWikiStates, useWikiData } from "./WikiContext";
 import WikiEntriesList from "./WikiEntriesList";
 import WikiEntryDisplay from "./WikiEntryDisplay";
 import WikiMainCategories from "./WikiMainCategories";
@@ -7,16 +9,37 @@ import WikiMainCategories from "./WikiMainCategories";
 interface Props {}
 
 const Wiki: React.FC<Props> = () => {
+  const wikiData = useWikiData();
+
+  const displayWikiEntriesList = () => {
+    assertState(
+      wikiData,
+      EWikiStates.LOADED,
+      EWikiStates.CATEGORY_PICKED,
+      EWikiStates.ITEM_PICKED
+    );
+    return <WikiEntriesList />;
+  };
+  const displayWikiEntryDisplay = () => {
+    assertState(
+      wikiData,
+      EWikiStates.LOADED,
+      EWikiStates.CATEGORY_PICKED,
+      EWikiStates.ITEM_PICKED
+    );
+    return <WikiEntryDisplay />;
+  };
+
   return (
     <Grid container spacing={2} sx={{ px: 4 }}>
       <Grid item xs={12} sm={6} md={2}>
         <WikiMainCategories />
       </Grid>
       <Grid item xs={12} sm={6} md={2}>
-        <WikiEntriesList />
+        {displayWikiEntriesList()}
       </Grid>
       <Grid item xs={12} sm={12} md={8}>
-        <WikiEntryDisplay />
+        {displayWikiEntryDisplay()}
       </Grid>
     </Grid>
   );
