@@ -37,9 +37,8 @@ const MainCategories: React.FC<Props> = () => {
         })}
       </List>
     );
-  } catch (error) {
-    console.log(error);
-    return <div>Error Accured</div>;
+  } catch {
+    return <></>;
   }
 };
 

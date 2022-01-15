@@ -1,19 +1,19 @@
-import { Box, CardHeader, List, ListItem, Tab } from "@mui/material";
-import { TabContext, TabList, TabPanel } from "@mui/lab";
-import { useEffect, useState } from "react";
+import { Box, CardHeader, Link, List, ListItem, Paper } from "@mui/material";
 import { ILink } from "../../../App";
-import { EWikiStates, useWikiData } from "../WikiContext";
+import { EWikiStates, useWikiData, useWikiDataHandler } from "../WikiContext";
+import { assertState } from "../../../Utils/AssertState";
 
 interface EQCategories extends ILink {
   equipment: ILink[];
 }
 
 const DisplayEquipmentCategories: React.FC = () => {
-  const [tabValue, setTabValue] = useState<string>("A");
-  const [filteredEquipment, setFilteredEquipment] = useState<ILink[]>([]);
   const wikiData = useWikiData();
-  const entryData: EQCategories =
-    wikiData.type === EWikiStates.ITEM_PICKED ? wikiData.itemPicked : {};
+  const wikiDataHanlder = useWikiDataHandler();
+
+  assertState(wikiData, EWikiStates.ITEM_PICKED);
+  const entryData: EQCategories = wikiData.itemPicked;
+
   console.log(entryData);
 
   const sortAlphabetUniqueLetters = (list: ILink[]) => {
@@ -21,50 +21,37 @@ const DisplayEquipmentCategories: React.FC = () => {
     list.map((item) => uniqueLetters.add(item.name.charAt(0)));
     return Array.from(uniqueLetters).sort();
   };
-
+  const sortListByLetter: (letter: string) => ILink[] = (letter) => {
+    return entryData.equipment.filter(
+      (item) => item.name.charAt(0) === letter
+    ) as ILink[];
+  };
   const uniqueLetters = sortAlphabetUniqueLetters(entryData.equipment);
 
-  useEffect(() => {
-    setTabValue(uniqueLetters[0]);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [entryData.equipment]);
-
-  useEffect(() => {
-    setFilteredEquipment(
-      entryData.equipment.filter((item) => item.name.charAt(0) === tabValue)
-    );
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [tabValue]);
-
-  const handleTabChange = (event: React.SyntheticEvent, newValue: string) => {
-    setTabValue(newValue);
-  };
   return (
     <>
       <CardHeader title={entryData.name}></CardHeader>
-      <Box sx={{ width: "100%" }}>
-        <TabContext value={tabValue}>
-          <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
-            <TabList
-              onChange={handleTabChange}
-              variant="scrollable"
-              scrollButtons="auto"
-            >
-              {uniqueLetters.map((letter) => (
-                <Tab key={letter} label={letter} value={letter}></Tab>
-              ))}
-            </TabList>
-          </Box>
-          {uniqueLetters.map((letter) => (
-            <TabPanel value={letter}>
-              <List>
-                {filteredEquipment.map((item) => (
-                  <ListItem key={item.index}>{item.name}</ListItem>
+      <Box>
+        <Paper>
+          {uniqueLetters.map((letter: string) => {
+            return (
+              <List key={letter} sx={{ pl: 2 }}>
+                {letter}
+                {sortListByLetter(letter).map((entry) => (
+                  <ListItem key={entry.index}>
+                    <Link
+                      onClick={() => {
+                        wikiDataHanlder.onInItemLinkClick(entry.url);
+                      }}
+                    >
+                      {entry.name}
+                    </Link>
+                  </ListItem>
                 ))}
               </List>
-            </TabPanel>
-          ))}
-        </TabContext>
+            );
+          })}
+        </Paper>
       </Box>
     </>
   );

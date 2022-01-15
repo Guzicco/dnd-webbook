@@ -1,6 +1,7 @@
 import { Card, Typography } from "@mui/material";
 import React from "react";
 import { ILink } from "../../App";
+import { assertState } from "../../Utils/AssertState";
 import { EWikiStates, IState, useWikiData } from "./WikiContext";
 import DisplayAbility from "./WikiEntryDisplays/DisplayAbility";
 import DisplayAlignments from "./WikiEntryDisplays/DisplayAlignments";
@@ -46,34 +47,33 @@ const WikiEntryDisplay = () => {
   const wikiData = useWikiData();
 
   const EntryDisplayed = (data: IState) => {
-    if (data.type === EWikiStates.ITEM_PICKED) {
-      switch (data.categoryPicked.type) {
-        case "ability-scores": {
-          return <DisplayAbility></DisplayAbility>;
-        }
-        case "alignments": {
-          return <DisplayAlignments></DisplayAlignments>;
-        }
-        case "skills": {
-          return <DisplaySkills></DisplaySkills>;
-        }
-        case "backgrounds": {
-          return <DisplayBackgrounds></DisplayBackgrounds>;
-        }
-        case "equipment": {
-          return <DisplayEquipment></DisplayEquipment>;
-        }
-        case "equipment-categories": {
-          return <DisplayEquipmentCategories></DisplayEquipmentCategories>;
-        }
-
-        default:
-          return (
-            <Typography sx={{ p: 2 }} variant={"h5"}>
-              not yet implemented
-            </Typography>
-          );
+    assertState(data, EWikiStates.ITEM_PICKED);
+    switch (data.categoryPicked.type) {
+      case "ability-scores": {
+        return <DisplayAbility></DisplayAbility>;
       }
+      case "alignments": {
+        return <DisplayAlignments></DisplayAlignments>;
+      }
+      case "skills": {
+        return <DisplaySkills></DisplaySkills>;
+      }
+      case "backgrounds": {
+        return <DisplayBackgrounds></DisplayBackgrounds>;
+      }
+      case "equipment": {
+        return <DisplayEquipment></DisplayEquipment>;
+      }
+      case "equipment-categories": {
+        return <DisplayEquipmentCategories></DisplayEquipmentCategories>;
+      }
+
+      default:
+        return (
+          <Typography sx={{ p: 2 }} variant={"h5"}>
+            not yet implemented
+          </Typography>
+        );
     }
   };
 
