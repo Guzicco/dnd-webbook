@@ -1,0 +1,13 @@
+.textLink {
+  color: inherit;
+  text-decoration: none;
+}
+
+.textLink :visited {
+  color: inherit;
+  text-decoration: none;
+}
+
+.textLink :hover {
+  text-decoration: underline;
+}

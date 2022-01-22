@@ -1,6 +1,9 @@
+import { ThemeProvider } from "@emotion/react";
+import { createTheme, CssBaseline } from "@mui/material";
 import React from "react";
 import { Route, Routes } from "react-router";
 import { BrowserRouter as Router } from "react-router-dom";
+import About from "./Components/About";
 import NavigationBar from "./Components/NavigationBar";
 import Wiki from "./Components/Wiki/Wiki";
 import { WikiDataProvider } from "./Components/Wiki/WikiContext";
@@ -43,27 +46,42 @@ const routes: { [key in IRouteName]: ILink } = {
   },
 };
 
+const theme = createTheme({
+  typography: {
+    fontFamily: ["BreatheFire", "Charm"].join(","),
+  },
+  components: {
+    MuiCssBaseline: {
+      styleOverrides: '@font-face {font-family: "Charm"};',
+    },
+  },
+});
+
 function App() {
   return (
     <Router>
-      <nav>
-        <NavigationBar routes={routes} />
-      </nav>
-      <main>
-        <Routes>
-          <Route path={routes.about.url} />
-          <Route
-            path={routes.wiki.url}
-            element={
-              <WikiDataProvider>
-                <Wiki />
-              </WikiDataProvider>
-            }
-          />
-          <Route path={routes.characters.url} />
-          <Route path={routes.diceSimulator.url} />
-        </Routes>
-      </main>
+      <ThemeProvider theme={theme}>
+        <CssBaseline>
+          <nav>
+            <NavigationBar routes={routes} />
+          </nav>
+          <main>
+            <Routes>
+              <Route path={routes.about.url} element={<About />} />
+              <Route
+                path={routes.wiki.url}
+                element={
+                  <WikiDataProvider>
+                    <Wiki />
+                  </WikiDataProvider>
+                }
+              />
+              <Route path={routes.characters.url} />
+              <Route path={routes.diceSimulator.url} />
+            </Routes>
+          </main>
+        </CssBaseline>
+      </ThemeProvider>
     </Router>
   );
 }
