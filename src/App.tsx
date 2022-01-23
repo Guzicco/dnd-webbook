@@ -1,5 +1,5 @@
 import { ThemeProvider } from "@emotion/react";
-import { createTheme, CssBaseline } from "@mui/material";
+import { Container, createTheme, CssBaseline } from "@mui/material";
 import React from "react";
 import { Route, Routes } from "react-router";
 import { BrowserRouter as Router } from "react-router-dom";
@@ -62,10 +62,11 @@ function App() {
     <Router>
       <ThemeProvider theme={theme}>
         <CssBaseline>
-          <nav>
-            <NavigationBar routes={routes} />
-          </nav>
-          <main>
+          <NavigationBar
+            routes={routes}
+            sx={{ height: { xs: "10vh", md: "7vh" } }}
+          />
+          <Container component="main" sx={{ pt: { xs: "10vh", md: "7vh" } }}>
             <Routes>
               <Route path={routes.about.url} element={<About />} />
               <Route
@@ -79,7 +80,7 @@ function App() {
               <Route path={routes.characters.url} />
               <Route path={routes.diceSimulator.url} />
             </Routes>
-          </main>
+          </Container>
         </CssBaseline>
       </ThemeProvider>
     </Router>

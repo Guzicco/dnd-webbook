@@ -4,6 +4,8 @@ import {
   Box,
   Button,
   Container,
+  ContainerClasses,
+  ContainerProps,
   IconButton,
   Menu,
   MenuItem,
@@ -17,11 +19,11 @@ import { IRouteName, ILink } from "../App";
 import styles from "../App.module.css";
 import logo from "../Static/img/DDLogo.jpg";
 
-interface Props {
+interface Props extends ContainerProps {
   routes: { [key in IRouteName]: ILink };
 }
 
-const NavigationBar: React.FC<Props> = ({ routes }) => {
+const NavigationBar: React.FC<Props> = ({ routes, sx: displayProps }) => {
   const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(
     null
   );
@@ -33,7 +35,7 @@ const NavigationBar: React.FC<Props> = ({ routes }) => {
   };
 
   return (
-    <AppBar position="sticky">
+    <AppBar position="fixed" sx={displayProps} component="nav">
       <Container maxWidth="xl">
         <Toolbar disableGutters>
           <Avatar
@@ -81,7 +83,11 @@ const NavigationBar: React.FC<Props> = ({ routes }) => {
               }}
             >
               {Object.entries(routes).map(([key, route]) => (
-                <MenuItem key={route.name} onClick={handleCloseNavMenu}>
+                <MenuItem
+                  key={route.name}
+                  onClick={handleCloseNavMenu}
+                  sx={{ width: "80vw" }}
+                >
                   <Typography textAlign="center">{route.name}</Typography>
                 </MenuItem>
               ))}
