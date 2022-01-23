@@ -84,6 +84,8 @@ const ChooseOptions: React.FC<IChooseProps> = ({ chooseList }) => {
             >
               {entry.alignments.map((aligment) => (
                 <Link
+                  component="button"
+                  variant="body1"
                   key={aligment.index}
                   sx={{ p: 1 }}
                   underline="hover"
@@ -109,6 +111,9 @@ const ChooseOptions: React.FC<IChooseProps> = ({ chooseList }) => {
             }}
           />
           <Link
+            component="button"
+            variant="body1"
+            underline="hover"
             onClick={() =>
               wikiDataHandler.onInItemLinkClick(entry.equipment_category.url)
             }
@@ -127,7 +132,12 @@ const ChooseOptions: React.FC<IChooseProps> = ({ chooseList }) => {
               setSelection(index);
             }}
           />
-          <Link onClick={() => wikiDataHandler.onInItemLinkClick(entry.url)}>
+          <Link
+            component="button"
+            variant="body1"
+            underline="hover"
+            onClick={() => wikiDataHandler.onInItemLinkClick(entry.url)}
+          >
             {entry.name}
           </Link>
         </ListItem>

@@ -17,6 +17,8 @@ const RelatedLinks: React.FC<IRelatedLinksProps> = ({ relatedLinks }) => {
           {relatedLinks.map((link) => (
             <ListItem key={link.index}>
               <Link
+                component="button"
+                variant="body1"
                 underline="hover"
                 onClick={() => {
                   wikiDataHandler.onInItemLinkClick(link.url);
