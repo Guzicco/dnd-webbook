@@ -39,6 +39,8 @@ const RelatedLinks: React.FC<IRelatedLinksProps> = ({ relatedLinks }) => {
         <List>
           <ListItem>
             <Link
+              component="button"
+              variant="body1"
               underline="hover"
               onClick={() =>
                 wikiDataHandler.onInItemLinkClick(relatedLinks.url)
