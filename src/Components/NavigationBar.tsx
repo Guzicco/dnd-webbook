@@ -15,6 +15,7 @@ import { Link as RouterLink } from "react-router-dom";
 import MenuIcon from "@mui/icons-material/Menu";
 import { IRouteName, ILink } from "../App";
 import styles from "../App.module.css";
+import logo from "../Static/img/DDLogo.jpg";
 
 interface Props {
   routes: { [key in IRouteName]: ILink };
@@ -36,8 +37,9 @@ const NavigationBar: React.FC<Props> = ({ routes }) => {
       <Container maxWidth="xl">
         <Toolbar disableGutters>
           <Avatar
+            variant="square"
+            src={logo}
             alt="D&D"
-            src="../Static/img/DDLogo.jpg"
             sx={{ mr: 2, display: { xs: "none", md: "flex" } }}
           />
           <Typography
