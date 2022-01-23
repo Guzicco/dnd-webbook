@@ -27,7 +27,7 @@ export interface IGenericLink<NameType = String> {
   index?: string;
 }
 
-const routes: { [key in IRouteName]: ILink } = {
+export const routes: { [key in IRouteName]: ILink } = {
   about: {
     name: "About",
     url: "",
@@ -48,7 +48,7 @@ const routes: { [key in IRouteName]: ILink } = {
 
 const theme = createTheme({
   typography: {
-    fontFamily: ["BreatheFire", "Charm"].join(","),
+    fontFamily: ["Charm"].join(","),
   },
   components: {
     MuiCssBaseline: {

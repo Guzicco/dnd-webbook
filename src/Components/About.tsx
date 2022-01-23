@@ -1,11 +1,13 @@
 import { ThemeProvider } from "@emotion/react";
 import { Box, Container, createTheme, Typography } from "@mui/material";
 import { Link } from "react-router-dom";
-import styles from "./About.module.css";
+import styles from "../App.module.css";
+import { routes } from "../App";
 
 const theme = createTheme({
   typography: {
     fontFamily: ["BreatheFire", "Charm"].join(","),
+    fontSize: 17,
     body1: {
       paddingLeft: 10,
       paddingTop: 1,
@@ -45,20 +47,44 @@ const About: React.FC = () => {
         </Box>
         <Box my={2} mx={1} pl={1} pb={2} borderBottom={1}>
           <Typography variant="h4">
-            <Link to="/Wiki" className={styles.textLink}>
+            <Link to={routes.wiki.url} className={styles.textLink}>
               Wiki
             </Link>
           </Typography>
           <Typography variant="body1">
             Place where all knowledge lies - use it wisely.
           </Typography>
-          <Typography variant="body2"></Typography>
+          <Typography variant="body2">
+            Wiki contains information from D&D 5th Edition.
+          </Typography>
+          <Typography variant="caption">
+            Data comes from external API{" "}
+            <Link to="https://www.dnd5eapi.co/">www.dnd5eapi.co</Link>
+          </Typography>
         </Box>
         <Box my={2} mx={1} pl={1} pb={2} borderBottom={1}>
-          <Typography variant="h4">Characters</Typography>
+          <Typography variant="h4">
+            <Link to={routes.characters.url} className={styles.textLink}>
+              Characters
+            </Link>
+          </Typography>
+          <Typography variant="body1">Characters spreadsheet.</Typography>
+          <Typography variant="caption">
+            Planned Feature - not yet implemented.
+          </Typography>
         </Box>
         <Box my={2} mx={1} pl={1} pb={2} borderBottom={1}>
-          <Typography variant="h4">Dice Simulator</Typography>
+          <Typography variant="h4">
+            <Link to={routes.diceSimulator.url} className={styles.textLink}>
+              Dice Simulator
+            </Link>
+          </Typography>
+          <Typography variant="body1">
+            Dice thrower, just in case you forgot to bring dice.
+          </Typography>
+          <Typography variant="caption">
+            Planned Feature - not yet implemented
+          </Typography>
         </Box>
       </Container>
     </ThemeProvider>

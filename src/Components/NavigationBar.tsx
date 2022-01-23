@@ -14,6 +14,7 @@ import React from "react";
 import { Link as RouterLink } from "react-router-dom";
 import MenuIcon from "@mui/icons-material/Menu";
 import { IRouteName, ILink } from "../App";
+import styles from "../App.module.css";
 
 interface Props {
   routes: { [key in IRouteName]: ILink };
@@ -100,7 +101,9 @@ const NavigationBar: React.FC<Props> = ({ routes }) => {
                 sx={{ my: 2, color: "white", display: "block" }}
               >
                 <Typography color="primary">
-                  <RouterLink to={`/${route.url}`}>{route.name}</RouterLink>
+                  <RouterLink to={`/${route.url}`} className={styles.textLink}>
+                    {route.name}
+                  </RouterLink>
                 </Typography>
               </Button>
             ))}
