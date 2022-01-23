@@ -67,6 +67,9 @@ const WikiEntryDisplay = () => {
       case "equipment-categories": {
         return <DisplayEquipmentCategories></DisplayEquipmentCategories>;
       }
+      case "magic-items": {
+        return <DisplayEquipment></DisplayEquipment>;
+      }
 
       default:
         return (

@@ -29,7 +29,7 @@ const SortedListAlphabeticaly: React.FC<IProps> = ({ itemsList }) => {
           <List key={letter} sx={{ pl: 2 }}>
             {letter}
             {sortListByLetter(letter).map((entry) => (
-              <ListItem key={entry.index}>
+              <ListItem key={entry.name}>
                 <Link
                   component="button"
                   variant="body1"

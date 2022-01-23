@@ -12,15 +12,15 @@ const Description: React.FC<IDescriptionProps> = ({ desc, name }) => {
       <Typography variant="h5">Description</Typography>
       {Array.isArray(desc) ? (
         desc.map((part, index) => (
-          <Typography paragraph key={index}>
+          <Typography variant="body1" key={index}>
             {part}
           </Typography>
         ))
       ) : (
-        <Typography paragraph>{desc}</Typography>
+        <Typography variant="body1">{desc}</Typography>
       )}
       {name ? (
-        <Typography sx={{ pt: 1 }} variant="h6">
+        <Typography sx={{ pt: 1 }} variant="body1">
           Example:<Typography>{name}</Typography>
         </Typography>
       ) : null}
