@@ -4,6 +4,8 @@ import React from "react";
 import { Route, Routes } from "react-router";
 import { BrowserRouter as Router } from "react-router-dom";
 import About from "./Components/About";
+import CharacterCreator from "./Components/CharacterSheet/CharacterCreator";
+import DiceSimulator from "./Components/DiceSimulator/DiceSimulator";
 import NavigationBar from "./Components/NavigationBar";
 import Wiki from "./Components/Wiki/Wiki";
 import { WikiDataProvider } from "./Components/Wiki/WikiContext";
@@ -77,8 +79,14 @@ function App() {
                   </WikiDataProvider>
                 }
               />
-              <Route path={routes.characters.url} />
-              <Route path={routes.diceSimulator.url} />
+              <Route
+                path={routes.characters.url}
+                element={<CharacterCreator />}
+              />
+              <Route
+                path={routes.diceSimulator.url}
+                element={<DiceSimulator />}
+              />
             </Routes>
           </Container>
         </CssBaseline>
