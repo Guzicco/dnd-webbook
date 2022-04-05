@@ -30,7 +30,7 @@ const DiceSimulator: React.FC = () => {
   return (
     <Card>
       <CardHeader title="Dice Simulator"></CardHeader>
-      <CardContent sx={{ display: "flex", alignContent: "center" }}>
+      <CardContent sx={{ display: "flex", alignContent: "center", gap: 1 }}>
         <FormControl fullWidth>
           <InputLabel id="dice-label">Dice</InputLabel>
           <Select labelId="dice-label" label="Dice" value={dice}>
@@ -61,22 +61,24 @@ const DiceSimulator: React.FC = () => {
           ROLL
         </Button>
       </CardContent>
-      <CardContent>
-        Results:
-        {throwResults.map((result, index) => (
-          <Typography key={index}>{result}</Typography>
-        ))}
-        SortedResults:
-        {throwResults.length > 0 &&
-          [...throwResults]
-            .sort((a, b) => a - b)
-            .map((result, index) => (
-              <Typography key={index}>{result}</Typography>
-            ))}
-        Throw Summ:
-        {throwResults.length > 0 &&
-          throwResults.reduce((sum, result) => sum + result, 0)}
-      </CardContent>
+      {throwResults.length > 0 && (
+        <CardContent>
+          Results:
+          {throwResults.map((result, index) => (
+            <Typography key={index}>{result}</Typography>
+          ))}
+          Sorted Results:
+          {throwResults.length > 0 &&
+            [...throwResults]
+              .sort((a, b) => a - b)
+              .map((result, index) => (
+                <Typography key={index}>{result}</Typography>
+              ))}
+          Throw Summ:
+          {throwResults.length > 0 &&
+            throwResults.reduce((sum, result) => sum + result, 0)}
+        </CardContent>
+      )}
     </Card>
   );
 };
