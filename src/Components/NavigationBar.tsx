@@ -82,13 +82,17 @@ const NavigationBar: React.FC<Props> = ({ routes, sx: displayProps }) => {
               }}
             >
               {Object.entries(routes).map(([key, route]) => (
-                <MenuItem
-                  key={route.name}
-                  onClick={handleCloseNavMenu}
-                  sx={{ width: "80vw" }}
-                >
-                  <Typography textAlign="center">{route.name}</Typography>
-                </MenuItem>
+                <RouterLink to={`/${route.url}`} className={styles.textLink}>
+                  <MenuItem
+                    key={route.name}
+                    onClick={() => {
+                      handleCloseNavMenu();
+                    }}
+                    sx={{ width: "80vw" }}
+                  >
+                    {route.name}
+                  </MenuItem>
+                </RouterLink>
               ))}
             </Menu>
           </Box>
