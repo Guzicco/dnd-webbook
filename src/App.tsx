@@ -1,5 +1,5 @@
 import { ThemeProvider } from "@emotion/react";
-import { Container, createTheme, CssBaseline } from "@mui/material";
+import { Container, createTheme } from "@mui/material";
 import React from "react";
 import { Route, Routes } from "react-router";
 import { BrowserRouter as Router } from "react-router-dom";
@@ -51,45 +51,61 @@ export const routes: { [key in IRouteName]: ILink } = {
 const theme = createTheme({
   typography: {
     fontFamily: ["Charm"].join(","),
-  },
-  components: {
-    MuiCssBaseline: {
-      styleOverrides: '@font-face {font-family: "Charm"};',
+    fontSize: 17,
+    body1: {
+      paddingLeft: 10,
+      paddingTop: 1,
+      maxWidth: "80%",
+    },
+    caption: {
+      paddingLeft: 10,
+      paddingTop: 1,
+      maxWidth: "80%",
+      fontStyle: "italic",
     },
   },
+  // components: {
+  //   MuiCssBaseline: {
+  //     styleOverrides: '@font-face {font-family: "Charm"};',
+  //   },
+  // },
 });
 
+const navigationHeihtDesktop = "120px";
+const navigationHeightMobile = "80px";
 function App() {
   return (
     <Router>
       <ThemeProvider theme={theme}>
-        <CssBaseline>
-          <NavigationBar
-            routes={routes}
-            sx={{ height: { xs: "10vh", md: "7vh" } }}
-          />
-          <Container component="main" sx={{ pt: { xs: "10vh", md: "7vh" } }}>
-            <Routes>
-              <Route path={routes.about.url} element={<About />} />
-              <Route
-                path={routes.wiki.url}
-                element={
-                  <WikiDataProvider>
-                    <Wiki />
-                  </WikiDataProvider>
-                }
-              />
-              <Route
-                path={routes.characters.url}
-                element={<CharacterCreator />}
-              />
-              <Route
-                path={routes.diceSimulator.url}
-                element={<DiceSimulator />}
-              />
-            </Routes>
-          </Container>
-        </CssBaseline>
+        <NavigationBar routes={routes} />
+        <Container
+          component="main"
+          maxWidth={false}
+          sx={{
+            width: { xs: "100%", md: "90%" },
+            mt: { xs: navigationHeightMobile, md: navigationHeihtDesktop },
+          }}
+        >
+          <Routes>
+            <Route path={routes.about.url} element={<About />} />
+            <Route
+              path={routes.wiki.url}
+              element={
+                <WikiDataProvider>
+                  <Wiki />
+                </WikiDataProvider>
+              }
+            />
+            <Route
+              path={routes.characters.url}
+              element={<CharacterCreator />}
+            />
+            <Route
+              path={routes.diceSimulator.url}
+              element={<DiceSimulator />}
+            />
+          </Routes>
+        </Container>
       </ThemeProvider>
     </Router>
   );
